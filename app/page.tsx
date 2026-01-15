@@ -53,7 +53,7 @@ export default function Psalm3FullSite() {
 
     if (data) {
       setProjects(data);
-      const total = data.reduce((sum, p) => sum + (Number(p.valuation_amount) || 0), 0);
+      const total = data.reduce((sum, p) => sum + (Number(100000) || 0), 0);
       setTotalVetted(total);
     }
     if (error) console.error("Error fetching projects:", error);
@@ -69,7 +69,7 @@ export default function Psalm3FullSite() {
       `🛡️ ${projectName} has officially been VETTED & VERIFIED on @Psalm3_Protocol.\n\nBuilding the future of the ${chain} ecosystem.`
     );
     const url = encodeURIComponent(window.location.href);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    window.open(`https://t.me/CEO_Psalms`, '_blank');'_blank';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
