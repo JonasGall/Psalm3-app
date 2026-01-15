@@ -221,7 +221,7 @@ export default function Psalm3FullSite() {
                   {['Ethereum', 'Solana', 'Base', 'Polygon', 'Arbitrum', 'Optimism', 'Avalanche', 'BSC'].map(c => <option key={c} className="bg-[#0D1117]">{c}</option>)}
                 </select>
                 <select value={formData.stage} onChange={(e) => setFormData({...formData, stage: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white appearance-none">
-                   {['Pre-Seed', 'Seed', 'Series A', 'Mainnet Live'].map(s => <option key={s} className="bg-[#0D1117]">{s}</option>)}
+                   {['Pre-Seed', 'Seed', 'Series A', 'Private', 'Public', 'Mainnet Live'].map(s => <option key={s} className="bg-[#0D1117]">{s}</option>)}
                 </select>
               </div>
 
