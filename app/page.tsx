@@ -34,7 +34,7 @@ export default function Psalm3FullSite() {
     name: '',
     chain: 'Ethereum',
     stage: 'Seed',
-    need: 'Security Audit',
+    need: 'Security Audit', // Default value for Seeking Partner
     telegram: '' 
   });
 
@@ -52,7 +52,7 @@ export default function Psalm3FullSite() {
 
     if (data) {
       setProjects(data);
-      const total = data.reduce((sum, p) => sum + (Number(100000) || 0), 0);
+      const total = data.reduce((sum, p) => sum + (Number(p.valuation_amount) || 0), 0);
       setTotalVetted(total);
     }
     if (error) console.error("Error fetching projects:", error);
@@ -71,7 +71,7 @@ export default function Psalm3FullSite() {
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
   };
 
-  // NEW: Open Deal Room Logic (Telegram)
+  // Open Deal Room Logic (Telegram)
   const openDealRoom = (handle: string) => {
     if (handle) {
       const cleanHandle = handle.replace('@', '');
@@ -144,7 +144,7 @@ export default function Psalm3FullSite() {
           </button>
         </div>
 
-        {/* --- STATS BAR --- */}
+        {/* --- DYNAMIC STATS BAR --- */}
         <div id="stats" className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-12 border-t border-white/5">
           <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
@@ -270,9 +270,25 @@ export default function Psalm3FullSite() {
                 </div>
               </div>
 
+              {/* RE-ADDED SEEKING PARTNER FIELD */}
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-500 ml-1">Seeking Partner For</label>
+                <select 
+                  value={formData.need} 
+                  onChange={(e) => setFormData({...formData, need: e.target.value})} 
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 outline-none appearance-none font-bold text-white"
+                >
+                  <option className="bg-[#0D1117]">Security Audit</option>
+                  <option className="bg-[#0D1117]">Market Maker (Liquidity)</option>
+                  <option className="bg-[#0D1117]">Venture Capital (Lead)</option>
+                  <option className="bg-[#0D1117]">KOL / Distribution</option>
+                  <option className="bg-[#0D1117]">Exchange Listing</option>
+                </select>
+              </div>
+
               <div className="pt-4">
-                <button disabled={isSubmitting} type="submit" className="w-full bg-cyan-400 text-black font-black py-5 rounded-2xl hover:bg-white transition-all uppercase tracking-[0.2em]">
-                  {isSubmitting ? "ENCRYPTING..." : "SUBMIT TO PSALM3"}
+                <button disabled={isSubmitting} type="submit" className="w-full bg-cyan-400 text-black font-black py-5 rounded-2xl hover:bg-white disabled:bg-gray-800 transition-all uppercase tracking-[0.2em] shadow-lg shadow-cyan-400/20">
+                  {isSubmitting ? "ENCRYPTING DATA..." : "SUBMIT TO PSALM3"}
                 </button>
               </div>
             </form>
