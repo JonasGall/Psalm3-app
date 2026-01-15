@@ -75,7 +75,6 @@ export default function Psalm3FullSite() {
     if (element) element.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Filtered Projects Logic
   const filteredProjects = projects.filter(p => 
     activeChain === 'All' || p.chain === activeChain
   );
@@ -100,13 +99,18 @@ export default function Psalm3FullSite() {
       </nav>
 
       <main className="flex-grow">
-        {/* HERO & METRICS */}
+        {/* HERO & OFFICIAL DESCRIPTION */}
         <header className="py-24 px-6 text-center max-w-6xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-1 rounded-full text-[10px] font-black mb-8 tracking-widest uppercase animate-pulse">
             <Zap className="w-3 h-3" /> Protocol Active
           </div>
           <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 italic uppercase text-white leading-none">Trust <span className="text-cyan-400">Layer.</span></h1>
           
+          {/* PSALM3 SHORT DESCRIPTION INTEGRATION */}
+          <p className="text-gray-400 text-lg md:text-xl font-medium italic max-w-3xl mx-auto mb-16 px-4 leading-relaxed">
+            "Psalm3 is the industry's security-first alliance layer and institutional trust protocol, bridging high-signal builders with elite ecosystem partners through rigorous vetting."
+          </p>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 border-t border-white/5 px-4">
             <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5 shadow-inner">
               <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex items-center gap-2 mb-2"><TrendingUp className="w-3 h-3 text-cyan-400" /> TVV (Vetted)</span>
@@ -127,7 +131,7 @@ export default function Psalm3FullSite() {
           </div>
         </header>
 
-        {/* --- TIER PRICING --- */}
+        {/* --- TIER PRICING ($0, $149, $499) --- */}
         <section id="pricing" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
             <div className="text-center mb-16">
                 <h2 className="text-4xl font-black uppercase italic tracking-tighter mb-4">Protocol <span className="text-cyan-400">Access</span></h2>
@@ -155,10 +159,7 @@ export default function Psalm3FullSite() {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
               <h2 className="text-2xl font-black uppercase italic text-gray-500 tracking-widest mb-2">Active Deal Flow</h2>
-              <p className="text-[10px] font-bold text-gray-600 uppercase tracking-[0.2em]">Institutional vetting in progress</p>
             </div>
-            
-            {/* CHAIN FILTER TABS */}
             <div className="flex flex-wrap gap-2">
               {chains.map(c => (
                 <button 
@@ -195,7 +196,7 @@ export default function Psalm3FullSite() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 mt-4">
-                    <button onClick={() => window.open(p.website_url)} className="py-4 rounded-xl bg-white/5 border border-white/10 group-hover:bg-cyan-400 group-hover:text-black font-black transition-all text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg">
+                    <button onClick={() => window.open(p.website_url)} className="py-4 rounded-xl bg-white/5 border border-white/10 group-hover:bg-cyan-400 group-hover:text-black font-black transition-all text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
                       <Globe className="w-3 h-3" /> Website
                     </button>
                     <button onClick={() => window.open(p.deck_url)} className="py-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400 font-black transition-all text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
@@ -204,12 +205,6 @@ export default function Psalm3FullSite() {
                   </div>
               </div>
             ))}
-            
-            {filteredProjects.length === 0 && (
-              <div className="col-span-full py-20 text-center border border-dashed border-white/10 rounded-[40px]">
-                <p className="text-gray-600 font-black uppercase italic tracking-widest">No active deals on {activeChain} at this moment.</p>
-              </div>
-            )}
           </div>
         </section>
       </main>
@@ -237,8 +232,8 @@ export default function Psalm3FullSite() {
           <div>
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6">Social</h4>
             <div className="flex gap-4 justify-center md:justify-start">
-              <a href="https://x.com/Psalms_Capital" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all shadow-xl"><Twitter className="w-5 h-5" /></a>
-              <a href="https://t.me/CEO_Psalms" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all shadow-xl"><MessageCircle className="w-5 h-5" /></a>
+              <a href="https://x.com/Psalms_Capital" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all"><Twitter className="w-5 h-5" /></a>
+              <a href="https://t.me/CEO_Psalms" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all"><MessageCircle className="w-5 h-5" /></a>
             </div>
           </div>
         </div>
