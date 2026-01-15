@@ -58,7 +58,7 @@ export default function Psalm3FullSite() {
     }]);
     setIsSubmitting(false);
     if (!error) {
-      alert(`Genesis Phase Initialized.\nTier: ${formData.tier}\nWe will contact you on Telegram.`);
+      alert(`Genesis Phase Initialized.\nTier: ${formData.tier}\nA Psalm3 analyst will contact ${formData.telegram} on Telegram.`);
       setIsModalOpen(false);
       setFormData({ name: '', chain: 'Ethereum', stage: 'Seed', need: 'Security Audit', telegram: '', tier: 'Genesis' });
     }
@@ -73,7 +73,7 @@ export default function Psalm3FullSite() {
           <ShieldCheck className="text-cyan-400 w-8 h-8" />
           <span className="text-2xl font-black uppercase italic tracking-[0.2em]">Psalm3</span>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className="bg-cyan-400 text-black px-6 py-2 rounded-full text-[10px] font-black tracking-widest uppercase hover:bg-white transition-all">
+        <button onClick={() => setIsModalOpen(true)} className="bg-white/5 border border-white/10 px-6 py-2 rounded-full text-[10px] font-black tracking-widest uppercase hover:bg-cyan-400 hover:text-black transition-all">
           Apply Now
         </button>
       </nav>
@@ -86,7 +86,7 @@ export default function Psalm3FullSite() {
         <p className="text-gray-500 text-lg uppercase tracking-[0.3em] font-bold mb-12">Institutional Grade Vetting for Web3</p>
       </header>
 
-      {/* --- 4. NEW PRICING SECTION --- */}
+      {/* --- PRICING SECTION --- */}
       <section className="max-w-6xl mx-auto px-6 py-20 border-t border-white/5">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-black uppercase italic tracking-tight mb-2">Vetting Protocols</h2>
@@ -135,7 +135,7 @@ export default function Psalm3FullSite() {
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
           <h2 className="text-5xl font-black uppercase italic tracking-tighter">Live Deals</h2>
           <div className="flex flex-wrap gap-2">
-            {['All', 'Ethereum', 'Solana', 'Base'].map((f) => (
+            {['All', 'Ethereum', 'Solana', 'Base', 'Polygon'].map((f) => (
               <button key={f} onClick={() => setActiveFilter(f)} className={`px-8 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${activeFilter === f ? 'bg-cyan-400 text-black border-cyan-400' : 'bg-white/5 border-white/10'}`}>{f}</button>
             ))}
           </div>
@@ -156,8 +156,8 @@ export default function Psalm3FullSite() {
                     <span className="text-white italic">{p.chain}</span>
                   </div>
                   <div className="flex justify-between border-b border-white/5 pb-2 text-[10px] uppercase font-bold text-gray-500">
-                    <span>Vetting Status</span>
-                    <span className="text-cyan-400 italic">{p.vetting_tier} Verified</span>
+                    <span>Partner Need</span>
+                    <span className="text-white italic text-right">{p.partnership_need}</span>
                   </div>
                 </div>
                 <button 
@@ -175,17 +175,66 @@ export default function Psalm3FullSite() {
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/98 backdrop-blur-3xl" onClick={() => setIsModalOpen(false)} />
-          <div className="bg-[#0D1117] border border-white/10 w-full max-w-xl p-12 rounded-[50px] relative z-10">
-            <h2 className="text-5xl font-black mb-8 uppercase italic text-cyan-400 tracking-tighter">Apply</h2>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <input required type="text" placeholder="Project Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 font-bold text-white outline-none focus:border-cyan-400" />
-              <input required type="text" placeholder="Telegram @handle" value={formData.telegram} onChange={(e) => setFormData({...formData, telegram: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 font-bold text-white outline-none focus:border-cyan-400" />
-              <div className="grid grid-cols-3 gap-2 py-4">
-                {['Genesis', 'Verified', 'Alliance'].map((t) => (
-                  <button key={t} type="button" onClick={() => setFormData({...formData, tier: t})} className={`py-4 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${formData.tier === t ? 'bg-cyan-400 text-black border-cyan-400' : 'bg-white/5 border-white/10 text-gray-500'}`}>{t}</button>
-                ))}
+          <div className="bg-[#0D1117] border border-white/10 w-full max-w-xl p-12 rounded-[50px] relative z-10 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-5xl font-black mb-8 uppercase italic text-cyan-400 tracking-tighter">Protocol Application</h2>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              
+              {/* Basic Info */}
+              <div className="space-y-4">
+                <input required type="text" placeholder="Project Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 font-bold text-white outline-none focus:border-cyan-400" />
+                <input required type="text" placeholder="Telegram @handle" value={formData.telegram} onChange={(e) => setFormData({...formData, telegram: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 font-bold text-white outline-none focus:border-cyan-400" />
               </div>
-              <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-400 text-black font-black py-6 rounded-3xl uppercase tracking-widest text-sm hover:scale-[1.02] transition-all">Submit Protocol Request</button>
+
+              {/* RESTORED: Ecosystem & Stage Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase font-black text-gray-500 ml-2">Ecosystem</label>
+                  <select value={formData.chain} onChange={(e) => setFormData({...formData, chain: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white appearance-none">
+                    <option className="bg-[#0D1117]">Ethereum</option>
+                    <option className="bg-[#0D1117]">Solana</option>
+                    <option className="bg-[#0D1117]">Base</option>
+                    <option className="bg-[#0D1117]">Polygon</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase font-black text-gray-500 ml-2">Stage</label>
+                  <select value={formData.stage} onChange={(e) => setFormData({...formData, stage: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white appearance-none">
+                    <option className="bg-[#0D1117]">Stealth</option>
+                    <option className="bg-[#0D1117]">Pre-Seed</option>
+                    <option className="bg-[#0D1117]">Seed</option>
+                    <option className="bg-[#0D1117]">Mainnet Live</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* RESTORED: Seeking Partners For */}
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase font-black text-gray-500 ml-2">Seeking Partners For</label>
+                <select value={formData.need} onChange={(e) => setFormData({...formData, need: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white appearance-none">
+                    <option className="bg-[#0D1117]">Security Audit</option>
+                    <option className="bg-[#0D1117]">Market Maker (Liquidity)</option>
+                    <option className="bg-[#0D1117]">Venture Capital (Lead)</option>
+                    <option className="bg-[#0D1117]">KOL / Distribution</option>
+                    <option className="bg-[#0D1117]">Exchange Listing</option>
+                </select>
+              </div>
+
+              {/* Tier Selection */}
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase font-black text-gray-500 ml-2">Vetting Protocol Tier</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['Genesis', 'Verified', 'Alliance'].map((t) => (
+                    <button key={t} type="button" onClick={() => setFormData({...formData, tier: t})} className={`py-4 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${formData.tier === t ? 'bg-cyan-400 text-black border-cyan-400' : 'bg-white/5 border-white/10 text-gray-500'}`}>{t}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/5">
+                <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-400 text-black font-black py-6 rounded-3xl uppercase tracking-widest text-sm hover:scale-[1.02] transition-all shadow-lg shadow-cyan-400/20">
+                  {isSubmitting ? "ENCRYPTING DATA..." : "SUBMIT PROTOCOL REQUEST"}
+                </button>
+                <p className="text-center text-[9px] text-gray-600 mt-4 uppercase font-bold italic tracking-tighter">Manual vetting fee settled via Telegram handshake</p>
+              </div>
             </form>
           </div>
         </div>
