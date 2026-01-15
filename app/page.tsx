@@ -74,11 +74,11 @@ export default function Psalm3FullSite() {
   return (
     <div className="min-h-screen bg-[#020408] text-white selection:bg-cyan-500/30 font-sans flex flex-col scroll-smooth">
       <style jsx global>{`
-        @keyframes alliance-pulse {
-          0%, 100% { box-shadow: 0 0 10px rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.3); }
-          50% { box-shadow: 0 0 30px rgba(34, 211, 238, 0.5); border-color: rgba(34, 211, 238, 0.9); }
+        @keyframes cyan-glow-pulse {
+          0%, 100% { box-shadow: 0 0 15px rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.3); }
+          50% { box-shadow: 0 0 35px rgba(34, 211, 238, 0.4); border-color: rgba(34, 211, 238, 0.8); }
         }
-        .alliance-glow { animation: alliance-pulse 3s infinite ease-in-out; }
+        .alliance-glow { animation: cyan-glow-pulse 3.5s infinite ease-in-out; }
       `}</style>
 
       {/* --- NAVIGATION --- */}
@@ -91,17 +91,13 @@ export default function Psalm3FullSite() {
       </nav>
 
       <main className="flex-grow">
-        {/* HERO & FULL METRICS PANEL */}
+        {/* HERO & METRICS */}
         <header className="py-24 px-6 text-center max-w-6xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-1 rounded-full text-[10px] font-black mb-8 tracking-widest uppercase animate-pulse">
+          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-1 rounded-full text-[10px] font-bold mb-8 tracking-widest uppercase animate-pulse">
             <Zap className="w-3 h-3" /> Protocol Active
           </div>
           <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 italic uppercase text-white leading-none">Trust <span className="text-cyan-400">Layer.</span></h1>
           
-          <p className="text-gray-400 text-lg md:text-xl font-medium italic max-w-3xl mx-auto mb-16 px-4">
-             "Psalm3 is the industry's security-first alliance layer, bridging high-signal builders with elite ecosystem partners through rigorous vetting."
-          </p>
-
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 border-t border-white/5 px-4">
             <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5 shadow-inner">
               <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex items-center gap-2 mb-2"><TrendingUp className="w-3 h-3 text-cyan-400" /> TVV (Vetted)</span>
@@ -116,11 +112,35 @@ export default function Psalm3FullSite() {
               <div className="text-3xl font-black text-white">9+</div>
             </div>
             <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5 shadow-inner">
-              <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex items-center gap-2 mb-2"><Lock className="w-3 h-3 text-cyan-400" /> Protocol</span>
+              <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex items-center gap-2 mb-2"><Lock className="w-3 h-3 text-cyan-400" /> Status</span>
               <div className="text-sm font-black uppercase italic text-cyan-400">Secured</div>
             </div>
           </div>
         </header>
+
+        {/* --- TIER PRICING SECTION --- */}
+        <section id="pricing" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
+            <div className="text-center mb-16">
+                <h2 className="text-4xl font-black uppercase italic tracking-tighter mb-4">Protocol <span className="text-cyan-400">Entry</span> Costs</h2>
+                <p className="text-gray-500 text-sm italic">Institutional-grade vetting and connectivity fees.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                    { tier: 'Genesis', price: 'Free', features: ['Basic Profile', 'Community Access', 'Ecosystem Listing'] },
+                    { tier: 'Verified', price: '$2,500', features: ['Shield Badge', 'Institutional Brief', 'Lead VC Introduction', 'Security Audit Review'] },
+                    { tier: 'Alliance', price: '$7,500', features: ['Neon Glow Status', 'Premium Placement', 'Market Maker Support', 'Strategic Advisory'] }
+                ].map((p) => (
+                    <div key={p.tier} className={`p-10 rounded-[40px] border flex flex-col ${p.tier === 'Alliance' ? 'border-cyan-400 alliance-glow' : 'border-white/5 bg-white/[0.01]'}`}>
+                        <h4 className="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-2">{p.tier} Tier</h4>
+                        <div className="text-4xl font-black mb-8 italic">{p.price}</div>
+                        <ul className="space-y-4 mb-10 flex-grow">
+                            {p.features.map(f => <li key={f} className="text-xs font-bold text-gray-400 flex items-center gap-2"><CheckCircle2 className="w-3 h-3 text-cyan-400" /> {f}</li>)}
+                        </ul>
+                        <button onClick={() => { setFormData({...formData, tier: p.tier}); setIsModalOpen(true); }} className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-cyan-400 hover:text-black transition-all">Select {p.tier}</button>
+                    </div>
+                ))}
+            </div>
+        </section>
 
         {/* --- ARCHIVE SECTION --- */}
         <section id="archive" className="max-w-7xl mx-auto px-6 mb-32 pt-20">
@@ -142,7 +162,7 @@ export default function Psalm3FullSite() {
           </div>
         </section>
 
-        {/* --- LIVE DIRECTORY WITH GLOW & BADGES --- */}
+        {/* --- LIVE DIRECTORY --- */}
         <section id="vetting" className="max-w-7xl mx-auto px-6 py-12 border-t border-white/5 pt-20">
           <h2 className="text-2xl font-black uppercase mb-12 italic text-gray-500 tracking-widest">Active Deal Flow</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
@@ -176,31 +196,29 @@ export default function Psalm3FullSite() {
         </section>
       </main>
 
-      {/* --- FOOTER WITH FUNCTIONAL ANCHORS --- */}
+      {/* --- FOOTER --- */}
       <footer className="border-t border-white/5 bg-[#080a0e] pt-20 pb-10 px-6 mt-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 text-center md:text-left">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-6 justify-center md:justify-start">
               <ShieldCheck className="text-cyan-400 w-6 h-6" />
               <span className="text-xl font-black uppercase italic tracking-[0.2em]">Psalm3</span>
             </div>
-            <p className="text-gray-500 text-sm max-w-sm leading-relaxed italic mx-auto md:mx-0">
-               Psalm3 is the industry's security-first alliance layer and institutional trust protocol.
-            </p>
+            <p className="text-gray-500 text-sm max-w-sm leading-relaxed italic mx-auto md:mx-0">Industry-first institutional trust protocol.</p>
           </div>
           <div>
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6">Navigation</h4>
-            <ul className="space-y-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            <ul className="space-y-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
               <li onClick={() => scrollToSection('vetting')} className="hover:text-cyan-400 transition-colors cursor-pointer">Live Queue</li>
-              <li onClick={() => scrollToSection('archive')} className="hover:text-cyan-400 transition-colors cursor-pointer">Archive</li>
+              <li onClick={() => scrollToSection('pricing')} className="hover:text-cyan-400 transition-colors cursor-pointer">Tier Pricing</li>
               <li onClick={() => window.location.href='/vetting'} className="hover:text-cyan-400 transition-colors cursor-pointer flex items-center gap-2">Standards <ChevronRight className="w-3 h-3"/></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6 text-center md:text-left">Social</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6 text-center md:text-left">Connect</h4>
             <div className="flex gap-4 justify-center md:justify-start">
-              <a href="https://x.com/Psalm3_Protocol" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all"><Twitter className="w-5 h-5" /></a>
-              <a href="https://t.me/YourAdminHandle" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all"><MessageCircle className="w-5 h-5" /></a>
+              <a href="https://x.com/Psalm3_Protocol" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all shadow-xl"><Twitter className="w-5 h-5" /></a>
+              <a href="https://t.me/YourAdminHandle" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all shadow-xl"><MessageCircle className="w-5 h-5" /></a>
             </div>
           </div>
         </div>
@@ -209,14 +227,23 @@ export default function Psalm3FullSite() {
         </div>
       </footer>
 
-      {/* --- FORM MODAL WITH ALL DATA FIELDS --- */}
+      {/* --- FORM MODAL WITH PRICING SUMMARY --- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/98 backdrop-blur-3xl" onClick={() => setIsModalOpen(false)} />
           <div className="bg-[#0D1117] border border-white/10 w-full max-w-xl p-10 rounded-[50px] relative z-10 max-h-[90vh] overflow-y-auto">
             {!showSuccess ? (
               <form className="space-y-4" onSubmit={handleSubmit}>
-                <h2 className="text-4xl font-black uppercase italic text-cyan-400 text-center mb-8 tracking-tighter">Protocol Apply</h2>
+                <h2 className="text-4xl font-black uppercase italic text-cyan-400 text-center mb-6 tracking-tighter">Protocol Apply</h2>
+                
+                {/* Pricing Reference Panel */}
+                <div className="bg-cyan-400/5 border border-cyan-400/20 p-4 rounded-2xl mb-6 text-center">
+                    <p className="text-[9px] font-black uppercase text-cyan-400 tracking-widest mb-1">Requested Tier: {formData.tier}</p>
+                    <p className="text-xs font-bold italic text-white/50">
+                        {formData.tier === 'Alliance' ? '$7,500 Vetting Fee' : formData.tier === 'Verified' ? '$2,500 Vetting Fee' : 'Free Entry'}
+                    </p>
+                </div>
+
                 <input required placeholder="Project Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400" />
                 <textarea required placeholder="Institutional Description" rows={2} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-sm text-white focus:border-cyan-400" />
                 
@@ -225,13 +252,11 @@ export default function Psalm3FullSite() {
                         <option value="Pre-Seed">Pre-Seed</option>
                         <option value="Seed">Seed</option>
                         <option value="Series A">Series A</option>
-                        <option value="Private Round">Private Round</option>
                     </select>
                     <select value={formData.need} onChange={(e) => setFormData({...formData, need: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold text-white outline-none">
                         <option value="Lead VC">Lead VC</option>
                         <option value="Market Maker">Market Maker</option>
                         <option value="Security Audit">Security Audit</option>
-                        <option value="Launchpad">Launchpad</option>
                     </select>
                 </div>
 
@@ -240,8 +265,8 @@ export default function Psalm3FullSite() {
                   <input required placeholder="Official Website" value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400" />
                 </div>
                 
-                <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black uppercase text-gray-500 tracking-widest pl-2">Requested Tier</label>
+                <div className="flex flex-col gap-2 pt-2">
+                    <label className="text-[10px] font-black uppercase text-gray-500 tracking-widest pl-2 text-center">Update Selection</label>
                     <div className="grid grid-cols-3 gap-2">
                         {['Genesis', 'Verified', 'Alliance'].map(t => (
                           <button key={t} type="button" onClick={() => setFormData({...formData, tier: t})} className={`py-4 rounded-xl text-[9px] font-black uppercase border transition-all ${formData.tier === t ? 'bg-cyan-400 text-black border-cyan-400 shadow-lg shadow-cyan-400/20' : 'bg-white/5 border-white/10 text-gray-500'}`}>{t}</button>
