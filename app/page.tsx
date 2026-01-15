@@ -237,6 +237,8 @@ export default function Psalm3FullSite() {
                   <option className="bg-[#0D1117]">Market Maker (Liquidity)</option>
                   <option className="bg-[#0D1117]">Venture Capital (Lead)</option>
                   <option className="bg-[#0D1117]">KOL / Distribution</option>
+                  <option className="bg-[#0D1117]">Lauchpads / IDO</option>
+                  <option className="bg-[#0D1117]">Exchange</option>
                 </select>
               </div>
 
@@ -246,7 +248,7 @@ export default function Psalm3FullSite() {
                   type="submit" 
                   className="w-full bg-cyan-400 text-black font-black py-5 rounded-2xl hover:bg-white disabled:bg-gray-800 transition-all uppercase tracking-[0.2em] shadow-lg shadow-cyan-400/20"
                 >
-                  {isSubmitting ? "Encrypting Data..." : "Submit to Nexus"}
+                  {isSubmitting ? "Encrypting Data..." : "Submit to Psalm3"}
                 </button>
               </div>
             </form>
