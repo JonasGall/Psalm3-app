@@ -3,20 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { 
   ShieldCheck, 
-  Handshake, 
   Zap, 
   Plus, 
   Search, 
   ArrowRight, 
-  X, 
+  X as CloseIcon, 
   Globe, 
-  Filter,
   Activity,
   BarChart3,
   TrendingUp,
-  Lock,
-  Share2,
-  Twitter
+  Lock
 } from 'lucide-react';
 
 // Initialize Supabase Client
@@ -64,7 +60,7 @@ export default function Psalm3FullSite() {
     ? projects 
     : projects.filter(p => p.chain === activeFilter);
 
-  // --- NEW: Social Sharing Logic ---
+  // Social Sharing Logic
   const handleShare = (projectName: string, chain: string) => {
     const text = encodeURIComponent(
       `🛡️ ${projectName} has officially been VETTED & VERIFIED on @Psalm3_Protocol.\n\nBuilding the future of the ${chain} ecosystem. Check out the deal room here: `
@@ -208,9 +204,10 @@ export default function Psalm3FullSite() {
                 <div className="absolute top-0 right-0 p-6 flex gap-3 z-10">
                    <button 
                     onClick={() => handleShare(p.project_name, p.chain)}
-                    className="p-2 bg-white/5 hover:bg-cyan-400 hover:text-black rounded-lg transition-colors border border-white/10"
+                    className="p-2 bg-white/5 hover:bg-cyan-400 hover:text-black rounded-lg transition-all border border-white/10 flex items-center justify-center group/share"
+                    title="Share on X"
                    >
-                    <Twitter className="w-4 h-4" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z" /></svg>
                    </button>
                    <ShieldCheck className="w-8 h-8 text-cyan-400/50 group-hover:text-cyan-400 transition-colors" />
                 </div>
@@ -250,7 +247,7 @@ export default function Psalm3FullSite() {
           <div className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={() => setIsModalOpen(false)} />
           <div className="bg-[#0D1117] border border-white/10 w-full max-w-xl p-10 rounded-[40px] relative z-10 shadow-2xl">
             <button onClick={() => setIsModalOpen(false)} className="absolute top-8 right-8 text-gray-500 hover:text-white transition-colors">
-              <X className="w-8 h-8" />
+              <CloseIcon className="w-8 h-8" />
             </button>
             <div className="mb-10">
               <h2 className="text-4xl font-black mb-2 tracking-tighter uppercase italic text-cyan-400">Apply for Vetting</h2>
