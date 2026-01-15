@@ -126,9 +126,9 @@ export default function Psalm3FullSite() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
-                    { tier: 'Genesis', price: '$0', features: ['Basic Profile', 'Ecosystem Listing', 'Community Chat Access'] },
-                    { tier: 'Verified', price: '$149', features: ['Shield Badge', 'Priority Queue', 'Institutional Brief', 'Direct VC Introduction'] },
-                    { tier: 'Alliance', price: '$499', features: ['Neon Glow Status', 'Featured Listing', 'MM Support', 'Strategic Advisory'] }
+                    { tier: 'Genesis', price: '$0', features: ['Basic Profile', 'Ecosystem Listing', 'Verified Announcement'] },
+                    { tier: 'Verified', price: '$149', features: ['Shield Badge', 'Priority Queue', 'Institutional Brief', 'Partners Introduction', 'Verified Announcement'] },
+                    { tier: 'Alliance', price: '$499', features: ['Neon Glow Status', 'Featured Listing', 'Direct VC Introduction', 'Strategic Advisory'] }
                 ].map((p) => (
                     <div key={p.tier} className={`p-10 rounded-[40px] border flex flex-col ${p.tier === 'Alliance' ? 'border-cyan-400 alliance-glow' : 'border-white/5 bg-white/[0.01]'}`}>
                         <h4 className="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-2">{p.tier}</h4>
@@ -199,8 +199,8 @@ export default function Psalm3FullSite() {
           <div>
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6">Social</h4>
             <div className="flex gap-4 justify-center md:justify-start">
-              <a href="https://x.com/Psalm3_Protocol" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all"><Twitter className="w-5 h-5" /></a>
-              <a href="https://t.me/YourAdminHandle" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all"><MessageCircle className="w-5 h-5" /></a>
+              <a href="https://x.com/Psalms_Capital" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all"><Twitter className="w-5 h-5" /></a>
+              <a href="https://t.me/CEO_Psalms" target="_blank" className="p-3 rounded-xl bg-white/5 border border-white/10 hover:text-cyan-400 transition-all"><MessageCircle className="w-5 h-5" /></a>
             </div>
           </div>
         </div>
@@ -232,11 +232,14 @@ export default function Psalm3FullSite() {
                         <option value="Pre-Seed">Pre-Seed</option>
                         <option value="Seed">Seed</option>
                         <option value="Series A">Series A</option>
+                        <option value="Series A">Private</option>
+                        <option value="Series A">Public</option>
                     </select>
                     <select value={formData.need} onChange={(e) => setFormData({...formData, need: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold text-white outline-none">
                         <option value="Lead VC">Lead VC</option>
                         <option value="Market Maker">Market Maker</option>
                         <option value="Security Audit">Security Audit</option>
+                        <option value="Security Audit">Launchpads</option>
                     </select>
                 </div>
 
