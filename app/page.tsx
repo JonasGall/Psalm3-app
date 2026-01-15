@@ -39,25 +39,29 @@ export default function Psalm3FullSite() {
 
   // --- TELEGRAM NOTIFICATION LOGIC ---
   const sendTelegramAlert = async (data: any) => {
-    // Note: Use backticks for the message string
-    const text = `🛡️ *NEW PSALM3 APPLICATION*\n\n🚀 *Project:* ${data.name}\n💎 *Tier:* ${data.tier}\n⛓️ *Chain:* ${data.chain}\n📱 *Telegram:* ${data.telegram}\n📂 *Deck:* ${data.deck || 'None'}`;
+    // 1. Ensure the message is URL-safe
+    const message = `🛡️ NEW PSALM3 SUBMISSION\n\nProject: ${data.name}\nTier: ${data.tier}\nChain: ${data.chain}\nTelegram: ${data.telegram}\nDeck: ${data.deck || 'None'}`;
     
+    // 2. Build the URL directly (Internal Telegram API prefers GET for simple alerts)
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
     try {
-      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: text,
-          parse_mode: 'Markdown'
-        })
+      const response = await fetch(url, { 
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache'
       });
+
       const result = await response.json();
+      
       if (!result.ok) {
-        console.error("Telegram API Error:", result.description);
+        // This will now show up in your browser console (F12) if it fails
+        console.error("Telegram error detail:", result);
+      } else {
+        console.log("✅ Telegram Alert Sent Successfully!");
       }
     } catch (err) {
-      console.error("Network Error reaching Telegram:", err);
+      console.error("Connection to Telegram failed. Check your internet or Bot Token.");
     }
   };
 
