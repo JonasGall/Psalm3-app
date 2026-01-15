@@ -13,8 +13,7 @@ import {
   BarChart3,
   TrendingUp,
   Lock,
-  Send,
-  Share2
+  Send
 } from 'lucide-react';
 
 // Initialize Supabase Client
@@ -36,7 +35,7 @@ export default function Psalm3FullSite() {
     chain: 'Ethereum',
     stage: 'Seed',
     need: 'Security Audit',
-    telegram: '' // Telegram handle state
+    telegram: '' 
   });
 
   // Fetch Verified Projects & Calculate Stats
@@ -69,7 +68,17 @@ export default function Psalm3FullSite() {
       `🛡️ ${projectName} has officially been VETTED & VERIFIED on @Psalm3_Protocol.\n\nBuilding the future of the ${chain} ecosystem.`
     );
     const url = encodeURIComponent(window.location.href);
-    window.open(`https://t.me/CEO_Psalms`, '_blank');'_blank';
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+  };
+
+  // NEW: Open Deal Room Logic (Telegram)
+  const openDealRoom = (handle: string) => {
+    if (handle) {
+      const cleanHandle = handle.replace('@', '');
+      window.open(`https://t.me/${cleanHandle}`, '_blank');
+    } else {
+      alert("This Deal Room is currently encrypted. Contact Psalm3 Admin for access.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -83,7 +92,7 @@ export default function Psalm3FullSite() {
         chain: formData.chain, 
         stage: formData.stage, 
         partnership_need: formData.need,
-        telegram_handle: formData.telegram, // Submitting Telegram to DB
+        telegram_handle: formData.telegram,
         is_verified: false,
         valuation_amount: 0 
       }]);
@@ -93,7 +102,7 @@ export default function Psalm3FullSite() {
     if (error) {
       alert("Submission Error: " + error.message);
     } else {
-      alert("Genesis Phase Initialized. We will contact you on Telegram shortly for vetting.");
+      alert("Genesis Phase Initialized. We will contact you on Telegram shortly.");
       setIsModalOpen(false);
       setFormData({ name: '', chain: 'Ethereum', stage: 'Seed', need: 'Security Audit', telegram: '' });
     }
@@ -123,13 +132,9 @@ export default function Psalm3FullSite() {
           <Activity className="w-3 h-3 animate-pulse" /> Alliance Protocol Active
         </div>
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-[0.9]">
-          BUILD <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500 text-white opacity-80">TRUST.</span><br/>
+          BUILD <span className="opacity-80">TRUST.</span><br/>
           FIND <span className="text-cyan-400 uppercase">ALLIES.</span>
         </h1>
-        <p className="text-gray-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
-          The premiere alliance layer for Web3. Bridging high-integrity builders 
-          with the industry's top-tier VCs, auditors, and ecosystem partners.
-        </p>
         <div className="flex flex-col md:flex-row justify-center gap-4 mb-20">
           <button 
             onClick={() => setIsModalOpen(true)}
@@ -139,7 +144,7 @@ export default function Psalm3FullSite() {
           </button>
         </div>
 
-        {/* --- DYNAMIC STATS BAR --- */}
+        {/* --- STATS BAR --- */}
         <div id="stats" className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-12 border-t border-white/5">
           <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
@@ -171,12 +176,9 @@ export default function Psalm3FullSite() {
       {/* --- LIVE DIRECTORY --- */}
       <section id="directory" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-8">
-          <div>
-            <h2 className="text-4xl font-black flex items-center gap-3 tracking-tighter uppercase italic text-white">
-              <Search className="text-cyan-400 w-8 h-8" /> Active Alliances
-            </h2>
-          </div>
-          
+          <h2 className="text-4xl font-black flex items-center gap-3 tracking-tighter uppercase italic text-white">
+            <Search className="text-cyan-400 w-8 h-8" /> Active Alliances
+          </h2>
           <div className="flex flex-wrap gap-2">
             {['All', 'Ethereum', 'Solana', 'Base', 'Polygon'].map((filter) => (
               <button
@@ -200,7 +202,7 @@ export default function Psalm3FullSite() {
                 <div className="absolute top-0 right-0 p-6 flex gap-3 z-10">
                    <button 
                     onClick={() => handleShare(p.project_name, p.chain)}
-                    className="p-2 bg-white/5 hover:bg-cyan-400 hover:text-black rounded-lg transition-all border border-white/10 flex items-center justify-center group/share"
+                    className="p-2 bg-white/5 hover:bg-cyan-400 hover:text-black rounded-lg transition-all border border-white/10 flex items-center justify-center"
                    >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z" /></svg>
                    </button>
@@ -215,7 +217,10 @@ export default function Psalm3FullSite() {
                   <span className="text-[10px] text-gray-500 uppercase font-bold block mb-1 tracking-widest">Seeking Partner</span>
                   <span className="text-md font-bold text-white uppercase italic">{p.partnership_need}</span>
                 </div>
-                <button className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-cyan-400 group-hover:text-black font-black transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest">
+                <button 
+                  onClick={() => openDealRoom(p.telegram_handle)}
+                  className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-cyan-400 group-hover:text-black font-black transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+                >
                   Open Deal Room <ArrowRight className="w-4 h-4" />
                 </button>
             </div>
@@ -231,10 +236,7 @@ export default function Psalm3FullSite() {
             <button onClick={() => setIsModalOpen(false)} className="absolute top-8 right-8 text-gray-500 hover:text-white transition-colors">
               <CloseIcon className="w-8 h-8" />
             </button>
-            <div className="mb-8">
-              <h2 className="text-4xl font-black mb-2 tracking-tighter uppercase italic text-cyan-400">Genesis Application</h2>
-              <p className="text-gray-500 text-sm">Enter the vetting protocol to access the alliance network.</p>
-            </div>
+            <h2 className="text-4xl font-black mb-6 tracking-tighter uppercase italic text-cyan-400">Apply for Vetting</h2>
             
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="space-y-2">
@@ -242,19 +244,11 @@ export default function Psalm3FullSite() {
                 <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="e.g. PSALM3 PROTOCOL" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 outline-none focus:border-cyan-400 transition-all font-bold text-white" />
               </div>
 
-              {/* TELEGRAM HANDLE FIELD */}
               <div className="space-y-2">
                 <label className="text-[10px] uppercase tracking-[0.2em] font-black text-cyan-400 ml-1 flex items-center gap-2">
                   <Send className="w-3 h-3" /> Telegram Handle (@username)
                 </label>
-                <input 
-                  required 
-                  type="text" 
-                  value={formData.telegram} 
-                  onChange={(e) => setFormData({...formData, telegram: e.target.value})} 
-                  placeholder="@handle"
-                  className="w-full bg-white/5 border border-cyan-400/30 rounded-2xl p-5 outline-none focus:border-cyan-400 transition-all font-bold text-white placeholder:text-gray-700" 
-                />
+                <input required type="text" value={formData.telegram} onChange={(e) => setFormData({...formData, telegram: e.target.value})} placeholder="@handle" className="w-full bg-white/5 border border-cyan-400/30 rounded-2xl p-5 outline-none focus:border-cyan-400 transition-all font-bold text-white placeholder:text-gray-700" />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -277,8 +271,8 @@ export default function Psalm3FullSite() {
               </div>
 
               <div className="pt-4">
-                <button disabled={isSubmitting} type="submit" className="w-full bg-cyan-400 text-black font-black py-5 rounded-2xl hover:bg-white disabled:bg-gray-800 transition-all uppercase tracking-[0.2em] shadow-lg shadow-cyan-400/20">
-                  {isSubmitting ? "ENCRYPTING DATA..." : "SUBMIT TO PSALM3"}
+                <button disabled={isSubmitting} type="submit" className="w-full bg-cyan-400 text-black font-black py-5 rounded-2xl hover:bg-white transition-all uppercase tracking-[0.2em]">
+                  {isSubmitting ? "ENCRYPTING..." : "SUBMIT TO PSALM3"}
                 </button>
               </div>
             </form>
