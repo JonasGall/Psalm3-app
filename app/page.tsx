@@ -15,7 +15,8 @@ import {
   BarChart3,
   TrendingUp,
   Lock,
-  Share2
+  Share2,
+  Twitter
 } from 'lucide-react';
 
 // Initialize Supabase Client
@@ -53,8 +54,7 @@ export default function Psalm3FullSite() {
 
     if (data) {
       setProjects(data);
-      // Calculate Total Value Vetted from the valuation_amount column
-      const total = data.reduce((sum, p) => sum + (Number(1000000) || 0), 0);
+      const total = data.reduce((sum, p) => sum + (Number(p.valuation_amount) || 0), 0);
       setTotalVetted(total);
     }
     if (error) console.error("Error fetching projects:", error);
@@ -63,6 +63,15 @@ export default function Psalm3FullSite() {
   const filteredProjects = activeFilter === 'All' 
     ? projects 
     : projects.filter(p => p.chain === activeFilter);
+
+  // --- NEW: Social Sharing Logic ---
+  const handleShare = (projectName: string, chain: string) => {
+    const text = encodeURIComponent(
+      `🛡️ ${projectName} has officially been VETTED & VERIFIED on @Psalm3_Protocol.\n\nBuilding the future of the ${chain} ecosystem. Check out the deal room here: `
+    );
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +85,7 @@ export default function Psalm3FullSite() {
         stage: formData.stage, 
         partnership_need: formData.need,
         is_verified: false,
-        valuation_amount: 0 // Default to 0 until you vet them
+        valuation_amount: 0 
       }]);
 
     setIsSubmitting(false);
@@ -169,10 +178,10 @@ export default function Psalm3FullSite() {
       <section id="directory" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-8">
           <div>
-            <h2 className="text-4xl font-black flex items-center gap-3 tracking-tighter uppercase italic">
+            <h2 className="text-4xl font-black flex items-center gap-3 tracking-tighter uppercase italic text-white">
               <Search className="text-cyan-400 w-8 h-8" /> Active Alliances
             </h2>
-            <p className="text-gray-500 mt-2">Authenticated projects currently seeking ecosystem partners.</p>
+            <p className="text-gray-500 mt-2 font-medium tracking-tight">Authenticated projects currently seeking ecosystem partners.</p>
           </div>
           
           <div className="flex flex-wrap gap-2">
@@ -196,9 +205,14 @@ export default function Psalm3FullSite() {
           {filteredProjects.length > 0 ? (
             filteredProjects.map((p) => (
               <div key={p.id} className="bg-[#0D1117] border border-white/5 p-8 rounded-[32px] hover:border-cyan-400/50 transition-all group relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity flex gap-2">
-                   <Share2 className="w-6 h-6 text-gray-500 hover:text-cyan-400 cursor-pointer" />
-                   <ShieldCheck className="w-12 h-12 text-cyan-400" />
+                <div className="absolute top-0 right-0 p-6 flex gap-3 z-10">
+                   <button 
+                    onClick={() => handleShare(p.project_name, p.chain)}
+                    className="p-2 bg-white/5 hover:bg-cyan-400 hover:text-black rounded-lg transition-colors border border-white/10"
+                   >
+                    <Twitter className="w-4 h-4" />
+                   </button>
+                   <ShieldCheck className="w-8 h-8 text-cyan-400/50 group-hover:text-cyan-400 transition-colors" />
                 </div>
                 <div className="flex gap-2 mb-6">
                   <span className="bg-cyan-400/10 text-cyan-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-cyan-400/20">
