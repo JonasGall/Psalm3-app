@@ -224,11 +224,17 @@ export default function Psalm3FullSite() {
                   <option className="bg-[#0D1117]">Solana</option>
                   <option className="bg-[#0D1117]">Base</option>
                   <option className="bg-[#0D1117]">Polygon</option>
+                  <option className="bg-[#0D1117]">Arbitrum</option>
+                  <option className="bg-[#0D1117]">BSC</option>
+                  <option className="bg-[#0D1117]">Avalaunche</option>
                 </select>
                 <select value={formData.need} onChange={(e) => setFormData({...formData, need: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white appearance-none">
                   <option className="bg-[#0D1117]">Security Audit</option>
                   <option className="bg-[#0D1117]">Market Maker</option>
                   <option className="bg-[#0D1117]">Lead VC</option>
+                  <option className="bg-[#0D1117]">Top Launchpads</option>
+                  <option className="bg-[#0D1117]">Gaming Ecosystem</option>
+                  <option className="bg-[#0D1117]">Partnerships</option>
                 </select>
               </div>
 
