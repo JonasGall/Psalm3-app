@@ -14,7 +14,8 @@ import {
   Activity,
   BarChart3,
   TrendingUp,
-  Lock
+  Lock,
+  Share2
 } from 'lucide-react';
 
 // Initialize Supabase Client
@@ -27,6 +28,7 @@ export default function Psalm3FullSite() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
+  const [totalVetted, setTotalVetted] = useState(0);
   const [activeFilter, setActiveFilter] = useState('All');
 
   // Form State
@@ -37,7 +39,7 @@ export default function Psalm3FullSite() {
     need: 'Security Audit'
   });
 
-  // Fetch Verified Projects
+  // Fetch Verified Projects & Calculate Stats
   useEffect(() => {
     fetchVerifiedProjects();
   }, []);
@@ -49,16 +51,19 @@ export default function Psalm3FullSite() {
       .eq('is_verified', true)
       .order('created_at', { ascending: false });
 
-    if (data) setProjects(data);
+    if (data) {
+      setProjects(data);
+      // Calculate Total Value Vetted from the valuation_amount column
+      const total = data.reduce((sum, p) => sum + (Number(1000000) || 0), 0);
+      setTotalVetted(total);
+    }
     if (error) console.error("Error fetching projects:", error);
   };
 
-  // Logic: Filter projects based on selected button
   const filteredProjects = activeFilter === 'All' 
     ? projects 
     : projects.filter(p => p.chain === activeFilter);
 
-  // Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -70,7 +75,8 @@ export default function Psalm3FullSite() {
         chain: formData.chain, 
         stage: formData.stage, 
         partnership_need: formData.need,
-        is_verified: false 
+        is_verified: false,
+        valuation_amount: 0 // Default to 0 until you vet them
       }]);
 
     setIsSubmitting(false);
@@ -123,18 +129,20 @@ export default function Psalm3FullSite() {
           >
             Apply for Vetting
           </button>
-          <a href="#directory" className="glass-panel px-12 py-5 rounded-2xl font-bold text-lg hover:bg-white/5 transition-all text-center">
+          <a href="#directory" className="glass-panel px-12 py-5 rounded-2xl font-bold text-lg hover:bg-white/5 transition-all text-center border border-white/10 flex items-center justify-center">
             Browse Directory
           </a>
         </div>
 
-        {/* --- STATS BAR --- */}
+        {/* --- DYNAMIC STATS BAR --- */}
         <div id="stats" className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-12 border-t border-white/5">
           <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
               <TrendingUp className="w-3 h-3 text-cyan-400" /> TVV (Total Value Vetted)
             </span>
-            <div className="text-2xl font-black tracking-tight">$0.00</div>
+            <div className="text-2xl font-black tracking-tight text-cyan-400">
+              ${totalVetted.toLocaleString()}
+            </div>
           </div>
           <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
@@ -167,7 +175,6 @@ export default function Psalm3FullSite() {
             <p className="text-gray-500 mt-2">Authenticated projects currently seeking ecosystem partners.</p>
           </div>
           
-          {/* ECOSYSTEM FILTER BUTTONS */}
           <div className="flex flex-wrap gap-2">
             {['All', 'Ethereum', 'Solana', 'Base', 'Polygon'].map((filter) => (
               <button
@@ -189,7 +196,8 @@ export default function Psalm3FullSite() {
           {filteredProjects.length > 0 ? (
             filteredProjects.map((p) => (
               <div key={p.id} className="bg-[#0D1117] border border-white/5 p-8 rounded-[32px] hover:border-cyan-400/50 transition-all group relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity flex gap-2">
+                   <Share2 className="w-6 h-6 text-gray-500 hover:text-cyan-400 cursor-pointer" />
                    <ShieldCheck className="w-12 h-12 text-cyan-400" />
                 </div>
                 <div className="flex gap-2 mb-6">
@@ -260,8 +268,6 @@ export default function Psalm3FullSite() {
                     <option className="bg-[#0D1117]">Solana</option>
                     <option className="bg-[#0D1117]">Base</option>
                     <option className="bg-[#0D1117]">Polygon</option>
-                    <option className="bg-[#0D1117]">BSC</option>
-                    <option className="bg-[#0D1117]">Artbitrum</option>
                   </select>
                 </div>
                 <div className="space-y-2 text-left">
@@ -274,8 +280,6 @@ export default function Psalm3FullSite() {
                     <option className="bg-[#0D1117]">Stealth</option>
                     <option className="bg-[#0D1117]">Pre-Seed</option>
                     <option className="bg-[#0D1117]">Seed</option>
-                    <option className="bg-[#0D1117]">Presale</option>
-                    <option className="bg-[#0D1117]">Public Sale</option>
                     <option className="bg-[#0D1117]">Mainnet Live</option>
                   </select>
                 </div>
@@ -292,8 +296,6 @@ export default function Psalm3FullSite() {
                   <option className="bg-[#0D1117]">Market Maker (Liquidity)</option>
                   <option className="bg-[#0D1117]">Venture Capital (Lead)</option>
                   <option className="bg-[#0D1117]">KOL / Distribution</option>
-                  <option className="bg-[#0D1117]">Launchpad</option>
-                  <option className="bg-[#0D1117]">Partnerships</option>
                   <option className="bg-[#0D1117]">Exchange Listing</option>
                 </select>
               </div>
