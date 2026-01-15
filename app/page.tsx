@@ -38,14 +38,13 @@ export default function Psalm3FullSite() {
     
     if (data) {
       setProjects(data);
-      // Calculate TVV (Total Vetted Value) based on the valuation column
-      const total = data.reduce((sum, p) => sum + (Number(100000) || 0), 0);
+      const total = data.reduce((sum, p) => sum + (Number(p.valuation_amount) || 0), 0);
       setTotalVetted(total);
     }
   };
 
   const handleShare = (name: string, chain: string) => {
-    const text = encodeURIComponent(`🛡️ ${name} has been officially VETTED on @Psalm3_Protocol.\n\nBuilding on ${chain}.`);
+    const text = encodeURIComponent(`🛡️ ${name} has been officially VETTED on @Psalm3_Protocol.\n\nBuilding the future of ${chain}.`);
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
   };
 
@@ -64,7 +63,7 @@ export default function Psalm3FullSite() {
     }]);
     setIsSubmitting(false);
     if (!error) {
-      alert(`Vetting Requested.\nTier: ${formData.tier}\nAwaiting analyst contact.`);
+      alert(`Genesis Phase Initialized.\nTier: ${formData.tier}\nWe will contact you on Telegram.`);
       setIsModalOpen(false);
       setFormData({ name: '', chain: 'Ethereum', stage: 'Seed', need: 'Security Audit', telegram: '', tier: 'Genesis' });
     }
@@ -84,43 +83,48 @@ export default function Psalm3FullSite() {
         </button>
       </nav>
 
-      {/* --- HERO & PROTOCOL METRICS --- */}
+      {/* --- HERO & PROTOCOL BRIEF --- */}
       <header className="py-24 px-6 text-center max-w-5xl mx-auto">
         <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-1 rounded-full text-[10px] font-bold mb-8 tracking-widest uppercase">
-          <Activity className="w-3 h-3 animate-pulse" /> Alliance Protocol Live
+          <Activity className="w-3 h-3 animate-pulse" /> Security Alliance Protocol
         </div>
         <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 leading-[0.8] uppercase italic">
-          Scale <span className="text-cyan-400">High.</span><br/>
-          Vet <span className="opacity-80">Hard.</span>
+          Trust <span className="text-cyan-400">Layer.</span><br/>
+          Scale <span className="opacity-80">Harder.</span>
         </h1>
 
-        {/* RESTORED METRICS BAR */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-12 mt-20 border-t border-white/5">
+        {/* --- PSALM3 DESCRIPTION --- */}
+        <div className="max-w-2xl mx-auto mb-16">
+          <p className="text-gray-400 text-lg md:text-xl font-medium leading-relaxed italic">
+            "Psalm3 is an institutional-grade vetting protocol designed to bridge the gap between high-signal builders and elite ecosystem partners. We sanitize the noise of Web3 by verifying identity, security standards, and protocol intent."
+          </p>
+        </div>
+
+        {/* --- METRICS BAR --- */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-12 border-t border-white/5">
           <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
-              <TrendingUp className="w-3 h-3 text-cyan-400" /> TVV (Total Vetted Value)
+              <TrendingUp className="w-3 h-3 text-cyan-400" /> TVV (Vetted)
             </span>
-            <div className="text-2xl font-black tracking-tight text-cyan-400">
-              ${totalVetted.toLocaleString()}
-            </div>
+            <div className="text-2xl font-black tracking-tight text-cyan-400">${totalVetted.toLocaleString()}</div>
           </div>
           <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
-              <Plus className="w-3 h-3 text-cyan-400" /> Active Projects
+              <Plus className="w-3 h-3 text-cyan-400" /> Projects
             </span>
             <div className="text-2xl font-black tracking-tight">{projects.length}</div>
           </div>
           <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
-              <Lock className="w-3 h-3 text-cyan-400" /> Vetting Queue
+              <Lock className="w-3 h-3 text-cyan-400" /> Queue
             </span>
-            <div className="text-2xl font-black tracking-tight">Locked</div>
+            <div className="text-2xl font-black tracking-tight uppercase text-sm italic">Active</div>
           </div>
           <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
-              <Globe className="w-3 h-3 text-cyan-400" /> Ecosystems
+              <Globe className="w-3 h-3 text-cyan-400" /> Networks
             </span>
-            <div className="text-2xl font-black tracking-tight">4</div>
+            <div className="text-2xl font-black tracking-tight uppercase text-sm italic">Multi-Chain</div>
           </div>
         </div>
       </header>
@@ -129,27 +133,27 @@ export default function Psalm3FullSite() {
       <section className="max-w-6xl mx-auto px-6 py-20 border-t border-white/5">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white/[0.02] border border-white/10 p-8 rounded-[32px]">
-            <h3 className="text-xl font-black uppercase italic mb-1 text-gray-400">Genesis</h3>
+            <h3 className="text-xl font-black uppercase italic mb-1 text-gray-500">Genesis</h3>
             <div className="text-3xl font-black mb-6">$0</div>
-            <p className="text-[10px] font-bold text-gray-500 uppercase">Entry-level Directory Listing</p>
+            <p className="text-[10px] font-bold text-gray-500 uppercase">Standard Inclusion</p>
           </div>
           <div className="bg-white/[0.03] border border-cyan-400/30 p-8 rounded-[32px] shadow-[0_0_40px_rgba(6,182,212,0.05)]">
             <h3 className="text-xl font-black uppercase italic mb-1 text-cyan-400">Verified</h3>
             <div className="text-3xl font-black mb-6">$199</div>
-            <p className="text-[10px] font-bold text-gray-300 uppercase">Verification Badge & Profile Audit</p>
+            <p className="text-[10px] font-bold text-gray-300 uppercase italic">Identity Verification & Badge</p>
           </div>
           <div className="bg-cyan-400 p-8 rounded-[32px] text-black shadow-[0_0_50px_rgba(6,182,212,0.2)]">
             <h3 className="text-xl font-black uppercase italic mb-1">Alliance</h3>
             <div className="text-3xl font-black mb-6">$499</div>
-            <p className="text-[10px] font-bold uppercase">Priority Placement & Deal Flow</p>
+            <p className="text-[10px] font-bold uppercase italic">Priority & Partnership Access</p>
           </div>
         </div>
       </section>
 
       {/* --- DIRECTORY --- */}
-      <section className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
+      <section id="directory" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-          <h2 className="text-5xl font-black uppercase italic tracking-tighter">Live Directory</h2>
+          <h2 className="text-5xl font-black uppercase italic tracking-tighter">Verified Deals</h2>
           <div className="flex flex-wrap gap-2">
             {['All', 'Ethereum', 'Solana', 'Base', 'Polygon'].map((f) => (
               <button key={f} onClick={() => setActiveFilter(f)} className={`px-8 py-2 rounded-xl text-[10px] font-black uppercase border transition-all ${activeFilter === f ? 'bg-cyan-400 text-black border-cyan-400' : 'bg-white/5 text-gray-500 border-white/10'}`}>{f}</button>
@@ -163,10 +167,9 @@ export default function Psalm3FullSite() {
               p.vetting_tier === 'Alliance' ? 'border-cyan-400 shadow-[0_0_50px_rgba(6,182,212,0.15)] scale-[1.03]' : 
               p.vetting_tier === 'Verified' ? 'border-cyan-400/30' : 'border-white/5'
             }`}>
-                {/* Fixed Badges & Social Icon */}
                 <div className="absolute top-6 left-6 flex gap-2">
                   {p.vetting_tier === 'Alliance' && (
-                    <div className="bg-cyan-400 text-black text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic flex items-center gap-1 shadow-lg">
+                    <div className="bg-cyan-400 text-black text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic flex items-center gap-1">
                       <Star className="w-3 h-3 fill-black" /> Alliance
                     </div>
                   )}
@@ -184,21 +187,19 @@ export default function Psalm3FullSite() {
                 </div>
 
                 <h3 className="text-3xl font-black mt-12 uppercase italic mb-8">{p.project_name}</h3>
-                <div className="space-y-4 mb-10">
-                  <div className="flex justify-between border-b border-white/5 pb-2 text-[10px] uppercase font-bold text-gray-500 tracking-widest">
-                    <span>Ecosystem</span>
-                    <span className="text-white italic">{p.chain}</span>
+                <div className="space-y-4 mb-10 text-[10px] uppercase font-bold text-gray-500">
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span>Ecosystem</span> <span className="text-white italic">{p.chain}</span>
                   </div>
-                  <div className="flex justify-between border-b border-white/5 pb-2 text-[10px] uppercase font-bold text-gray-500 tracking-widest">
-                    <span>Vetting</span>
-                    <span className="text-cyan-400 italic font-black uppercase">{p.vetting_tier}</span>
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span>Vetting</span> <span className="text-cyan-400 italic">{p.vetting_tier}</span>
                   </div>
                 </div>
                 <button 
                   onClick={() => window.open(`https://t.me/${p.telegram_handle?.replace('@','')}`, '_blank')}
-                  className="w-full py-5 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-cyan-400 group-hover:text-black font-black transition-all flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.2em]"
+                  className="w-full py-5 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-cyan-400 group-hover:text-black font-black transition-all flex items-center justify-center gap-3 text-[10px] uppercase tracking-widest"
                 >
-                  Open Deal Room <ArrowRight className="w-4 h-4" />
+                  Enter Deal Room <ArrowRight className="w-4 h-4" />
                 </button>
             </div>
           ))}
@@ -209,8 +210,8 @@ export default function Psalm3FullSite() {
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/98 backdrop-blur-3xl" onClick={() => setIsModalOpen(false)} />
-          <div className="bg-[#0D1117] border border-white/10 w-full max-w-xl p-12 rounded-[50px] relative z-10 max-h-[90vh] overflow-y-auto shadow-2xl">
-            <h2 className="text-5xl font-black mb-8 uppercase italic text-cyan-400 tracking-tighter leading-none">Apply</h2>
+          <div className="bg-[#0D1117] border border-white/10 w-full max-w-xl p-12 rounded-[50px] relative z-10 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-5xl font-black mb-8 uppercase italic text-cyan-400 tracking-tighter">Application</h2>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <input required placeholder="Project Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 font-bold text-white outline-none focus:border-cyan-400" />
@@ -226,18 +227,15 @@ export default function Psalm3FullSite() {
                 </select>
                 <select value={formData.need} onChange={(e) => setFormData({...formData, need: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white appearance-none">
                   <option className="bg-[#0D1117]">Security Audit</option>
-                  <option className="bg-[#0D1117]">Liquidity</option>
-                  <option className="bg-[#0D1117]">VC (Lead)</option>
+                  <option className="bg-[#0D1117]">Market Maker</option>
+                  <option className="bg-[#0D1117]">Lead VC</option>
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] uppercase font-black text-gray-500 ml-2">Select Tier</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['Genesis', 'Verified', 'Alliance'].map((t) => (
-                    <button key={t} type="button" onClick={() => setFormData({...formData, tier: t})} className={`py-4 rounded-xl text-[10px] font-black uppercase border transition-all ${formData.tier === t ? 'bg-cyan-400 text-black border-cyan-400' : 'bg-white/5 border-white/10 text-gray-500'}`}>{t}</button>
-                  ))}
-                </div>
+              <div className="grid grid-cols-3 gap-2">
+                {['Genesis', 'Verified', 'Alliance'].map((t) => (
+                  <button key={t} type="button" onClick={() => setFormData({...formData, tier: t})} className={`py-4 rounded-xl text-[10px] font-black uppercase border transition-all ${formData.tier === t ? 'bg-cyan-400 text-black border-cyan-400' : 'bg-white/5 border-white/10 text-gray-500'}`}>{t}</button>
+                ))}
               </div>
 
               <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-400 text-black font-black py-6 rounded-3xl uppercase text-sm hover:scale-[1.02] transition-all">Submit Protocol Request</button>
