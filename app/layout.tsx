@@ -4,7 +4,7 @@ export const metadata = {
   title: 'Psalm3 | Institutional Trust Protocol',
   description: "Psalm3 is the industry's security-first alliance layer and institutional trust protocol, bridging high-signal builders with elite ecosystem partners.",
   icons: {
-    icon: '/favicon.ico', // Make sure you have a favicon in your /public folder
+    icon: '/favicon.ico.png', // Make sure you have a favicon in your /public folder
   },
   openGraph: {
     title: 'Psalm3 Protocol',
