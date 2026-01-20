@@ -144,7 +144,7 @@ export default function Psalm3FullSite() {
         <section id="pricing" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
-                    { tier: 'Genesis', price: '$0', features: ['Basic Profile', 'Ecosystem Listing', 'Verified Announcement'] },
+                    { tier: 'Genesis', price: '$49', features: ['Basic Profile', 'Ecosystem Listing', 'Verified Announcement'] },
                     { tier: 'Verified', price: '$149', features: ['Shield Badge', 'Priority Queue', 'Partners Introduction', 'Verified Announcement'] },
                     { tier: 'Alliance', price: '$499', features: ['Neon Glow Status', 'Featured Listing', 'Direct VC Introduction', 'Strategic Advisory'] }
                 ].map((p) => (
