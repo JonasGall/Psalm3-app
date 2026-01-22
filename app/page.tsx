@@ -21,7 +21,7 @@ export default function Psalm3FullSite() {
   const [totalVetted, setTotalVetted] = useState(0);
   
   const [activeChain, setActiveChain] = useState('All');
-  const chains = ['All', 'Ethereum', 'Solana', 'Base', 'Polygon', 'Arbitrum', 'Avalanche', 'BSC'];
+  const chains = ['All', 'Ethereum', 'Solana', 'Base', 'Polygon', 'Arbitrum', 'Avalanche', 'BSC', 'TON'];
   
   const partnershipNeeds = [
     'Lead VC', 'Strategic Capital', 'KOL Distribution', 
