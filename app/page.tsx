@@ -50,6 +50,16 @@ export default function Psalm3FullSite() {
     telegram: '', website: '', tier: 'Genesis', deck: '', description: ''
   });
 
+  const [searchQuery, setSearchQuery] = useState('');
+const [trackedProject, setTrackedProject] = useState<Project | null>(null);
+
+const handleCheckStatus = () => {
+  const found = projects.find(p => 
+    p.project_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  setTrackedProject(found || null);
+};
+
   const scorecardQuestions = [
     { id: 1, text: "Do you have a Whitepaper/Litepaper?", category: "Foundations" },
     { id: 2, text: "Is your GitHub repo active or ready for review?", category: "Foundations" },
@@ -264,6 +274,71 @@ export default function Psalm3FullSite() {
             ))}
           </div>
         </section>
+
+        {/* --- INTERACTIVE VETTING TRACKER --- */}
+<section id="tracker" className="max-w-4xl mx-auto px-6 py-24 border-t border-white/5">
+  <div className="bg-[#0D1117] border border-cyan-400/20 rounded-[40px] p-8 md:p-12 relative overflow-hidden shadow-2xl">
+    <div className="relative z-10">
+      <h2 className="text-3xl font-black uppercase italic mb-6">Live <span className="text-cyan-400">Vetting</span> Status</h2>
+      
+      {/* Search Bar */}
+      <div className="flex gap-4 mb-12">
+        <input 
+          placeholder="Enter Project Name..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-grow bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none focus:border-cyan-400 transition-all text-sm"
+        />
+        <button 
+          onClick={handleCheckStatus}
+          className="bg-cyan-400 text-black px-8 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
+        >
+          Track
+        </button>
+      </div>
+
+      {trackedProject ? (
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div>
+            <div className="flex justify-between items-end mb-4">
+              <span className="text-[10px] font-black uppercase text-cyan-400 tracking-widest">{trackedProject.project_name} Audit</span>
+              <span className="text-2xl font-black italic">
+                {trackedProject.vetting_tier === 'Alliance' ? '85%' : trackedProject.vetting_tier === 'Verified' ? '50%' : '15%'}
+              </span>
+            </div>
+            <div className="w-full h-4 bg-white/5 rounded-full overflow-hidden border border-white/10 p-1">
+              <div 
+                className="h-full bg-cyan-400 rounded-full shadow-[0_0_15px_#22d3ee] transition-all duration-1000" 
+                style={{ width: trackedProject.vetting_tier === 'Alliance' ? '85%' : trackedProject.vetting_tier === 'Verified' ? '50%' : '15%' }}
+              ></div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="text-[9px] font-black uppercase text-gray-600 mb-2">Technical</div>
+              <div className="text-sm font-black uppercase italic text-cyan-400">Verified</div>
+            </div>
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="text-[9px] font-black uppercase text-gray-600 mb-2">Economics</div>
+              <div className={`text-sm font-black uppercase italic ${trackedProject.vetting_tier === 'Alliance' ? 'text-cyan-400' : 'text-yellow-500'}`}>
+                {trackedProject.vetting_tier === 'Alliance' ? 'Passed' : 'Reviewing'}
+              </div>
+            </div>
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="text-[9px] font-black uppercase text-gray-600 mb-2">KYC/Legal</div>
+              <div className="text-sm font-black uppercase italic text-gray-500">Pending</div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="text-center py-10 border-2 border-dashed border-white/5 rounded-3xl">
+          <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest">No active audit selected</p>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
 
         {/* --- VETTING PROGRESS TRACKER --- */}
 <section id="tracker" className="max-w-4xl mx-auto px-6 py-24 border-t border-white/5">
