@@ -202,20 +202,18 @@ export default function Psalm3FullSite() {
       {/* --- FOOTER --- */}
       <footer className="border-t border-white/5 bg-[#080a0e] pt-20 pb-10 px-6 mt-20 text-center md:text-left">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 text-center md:text-left">
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-6 justify-center md:justify-start">
-              <ShieldCheck className="text-cyan-400 w-6 h-6" />
-              <span className="text-xl font-black uppercase italic tracking-[0.2em]">Psalm3</span>
-            </div>
-            <p className="text-gray-500 text-sm max-w-sm leading-relaxed italic mx-auto md:mx-0">
-               Psalm3 is the industry's security-first alliance layer and institutional trust protocol.
-            </p>
-          </div>
           <div>
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6 font-sans">Ecosystem</h4>
             <ul className="space-y-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
               <li onClick={() => scrollToSection('vetting')} className="hover:text-cyan-400 cursor-pointer transition-colors">Live Queue</li>
-              <li onClick={() => window.location.href='/vetting'} className="hover:text-cyan-400 transition-colors cursor-pointer flex items-center gap-2">Standards <ChevronRight className="w-3 h-3"/></li>
+              
+              {/* This fix scrolls the user to the Protocol/Vetting section */}
+              <li 
+                onClick={() => window.location.href='#protocol'} 
+                className="hover:text-cyan-400 transition-colors cursor-pointer flex items-center justify-center md:justify-start gap-2"
+              >
+                Standards <ChevronRight className="w-3 h-3"/>
+              </li>
             </ul>
           </div>
           <div>
