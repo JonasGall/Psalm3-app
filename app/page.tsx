@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   ShieldCheck, Activity, TrendingUp, Plus, Globe, Lock, Star, 
   Twitter, MessageCircle, Send, FileText, Share2, ClipboardCheck,
-  Briefcase, CheckCircle2, Link as LinkIcon, Zap, ChevronRight
+  Briefcase, CheckCircle2, Link as LinkIcon, Zap, ChevronRight, X
 } from 'lucide-react';
 
 const supabase = createClient(
@@ -13,25 +13,40 @@ const supabase = createClient(
 );
 
 export default function Psalm3FullSite() {
+  // --- STATE ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
   const [portfolioProjects, setPortfolioProjects] = useState<any[]>([]); 
   const [totalVetted, setTotalVetted] = useState(0);
-  
   const [activeChain, setActiveChain] = useState('All');
-  const chains = ['All', 'Ethereum', 'Solana', 'Base', 'Polygon', 'Arbitrum', 'Avalanche', 'BSC', 'TON'];
   
-  const partnershipNeeds = [
-    'Lead VC', 'Strategic Capital', 'KOL Distribution', 
-    'Market Maker', 'Security Audit', 'Launchpad Access', 'Ecosystem Advisory'
-  ];
+  // --- SCORECARD STATE ---
+  const [score, setScore] = useState(0);
+  const [answeredCount, setAnsweredCount] = useState(0);
+  const [showScoreResult, setShowScoreResult] = useState(false);
+  const [answers, setAnswers] = useState<Record<number, boolean>>({});
+
+  const chains = ['All', 'Ethereum', 'Solana', 'Base', 'Polygon', 'Arbitrum', 'Avalanche', 'BSC', 'TON'];
+  const partnershipNeeds = ['Lead VC', 'Strategic Capital', 'KOL Distribution', 'Market Maker', 'Security Audit', 'Launchpad Access', 'Ecosystem Advisory'];
 
   const [formData, setFormData] = useState({
     name: '', chain: 'Ethereum', stage: 'Seed', need: 'Lead VC', 
     telegram: '', website: '', tier: 'Genesis', deck: '', description: ''
   });
+
+  const scorecardQuestions = [
+    { id: 1, text: "Do you have a Whitepaper/Litepaper?", category: "Foundations" },
+    { id: 2, text: "Is your GitHub repo active or ready for review?", category: "Foundations" },
+    { id: 3, text: "Does your roadmap cover the next 12 months?", category: "Foundations" },
+    { id: 4, text: "Does the project solve a specific Web3 friction point?", category: "Market" },
+    { id: 5, text: "Is the core team willing to undergo KYC?", category: "Market" },
+    { id: 6, text: "Do you have a working MVP or high-fidelity UI?", category: "Market" },
+    { id: 7, text: "Do you have a plan for a 3rd party security audit?", category: "Security" },
+    { id: 8, text: "Are tokenomics sustainable (no 'hype' reliance)?", category: "Security" },
+    { id: 9, text: "Is your GTM strategy independent of influencers?", category: "Security" },
+  ];
 
   useEffect(() => { fetchVerifiedProjects(); }, []);
 
@@ -50,32 +65,39 @@ export default function Psalm3FullSite() {
     }
   };
 
+  const handleScoreChange = (id: number, val: boolean) => {
+    const oldVal = answers[id];
+    setAnswers({ ...answers, [id]: val });
+    if (oldVal === undefined) {
+      setAnsweredCount(prev => prev + 1);
+      if (val) setScore(prev => prev + 1);
+    } else if (oldVal !== val) {
+      setScore(prev => val ? prev + 1 : prev - 1);
+    }
+  };
+
+  const getResultTier = () => {
+    if (score <= 3) return { label: "NOISE", color: "text-red-400", desc: "Your project lacks institutional foundations. Genesis Tier recommended." };
+    if (score <= 6) return { label: "SIGNAL", color: "text-cyan-400", desc: "Strong potential. Verified Tier recommended to secure your Shield." };
+    return { label: "ALLIANCE", color: "text-purple-400", desc: "Institutional Grade. Alliance Tier recommended for direct VC bridging." };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
       const { error } = await supabase.from('applications').insert([{ 
-          project_name: formData.name, 
-          chain: formData.chain, 
-          stage: formData.stage,
-          partnership_need: formData.need, 
-          telegram_handle: formData.telegram, 
-          website_url: formData.website,      
-          vetting_tier: formData.tier, 
-          deck_url: formData.deck,
-          description: formData.description,
-          is_verified: false,
-          vetting_process_complete: false
+          project_name: formData.name, chain: formData.chain, stage: formData.stage,
+          partnership_need: formData.need, telegram_handle: formData.telegram, 
+          website_url: formData.website, vetting_tier: formData.tier, 
+          deck_url: formData.deck, description: formData.description,
+          is_verified: false, vetting_process_complete: false
       }]);
-
       if (error) throw error;
-
       setShowSuccess(true);
       setFormData({ name: '', chain: 'Ethereum', stage: 'Seed', need: 'Lead VC', telegram: '', website: '', tier: 'Genesis', deck: '', description: '' });
     } catch (err) {
-      console.error("Submission error:", err);
-      alert("Verification request failed. Please check your connection.");
+      alert("Verification request failed.");
     } finally {
       setIsSubmitting(false);
     }
@@ -85,10 +107,6 @@ export default function Psalm3FullSite() {
     const element = document.getElementById(id);
     if (element) element.scrollIntoView({ behavior: 'smooth' });
   };
-
-  const filteredProjects = projects.filter(p => 
-    activeChain === 'All' || p.chain === activeChain
-  );
 
   return (
     <div className="min-h-screen bg-[#020408] text-white selection:bg-cyan-500/30 font-sans flex flex-col scroll-smooth">
@@ -110,121 +128,138 @@ export default function Psalm3FullSite() {
       </nav>
 
       <main className="flex-grow">
-        {/* HERO & DESCRIPTION */}
+        {/* --- HERO --- */}
         <header className="py-24 px-6 text-center max-w-6xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-1 rounded-full text-[10px] font-black mb-8 tracking-widest uppercase animate-pulse">
             <Zap className="w-3 h-3" /> Protocol Active
           </div>
           <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 italic uppercase text-white leading-none">Trust <span className="text-cyan-400">Layer.</span></h1>
           <p className="text-gray-400 text-lg md:text-xl font-medium italic max-w-3xl mx-auto mb-16 px-4 leading-relaxed">
-            "Psalm3 is the industry's security-first alliance layer and institutional trust protocol, bridging high-signal builders with elite ecosystem partners through rigorous vetting."
+            "Psalm3 is the industry's security-first alliance layer and institutional trust protocol."
           </p>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 border-t border-white/5 px-4">
-            <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5 shadow-inner">
-              <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex items-center gap-2 mb-2"><TrendingUp className="w-3 h-3 text-cyan-400" /> TVV (Vetted)</span>
-              <div className="text-3xl font-black text-cyan-400">${totalVetted.toLocaleString()}</div>
-            </div>
-            <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5 shadow-inner">
-              <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex items-center gap-2 mb-2"><Plus className="w-3 h-3 text-cyan-400" /> Vetted Deals</span>
-              <div className="text-3xl font-black text-white">{projects.length + portfolioProjects.length}</div>
-            </div>
-            <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5 shadow-inner">
-              <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex items-center gap-2 mb-2"><Globe className="w-3 h-3 text-cyan-400" /> Networks</span>
-              <div className="text-3xl font-black text-white">9+</div>
-            </div>
-            <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5 shadow-inner">
-              <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest flex items-center gap-2 mb-2"><Lock className="w-3 h-3 text-cyan-400" /> Status</span>
-              <div className="text-sm font-black uppercase italic text-cyan-400">Secured</div>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 border-t border-white/5">
+            <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5"><span className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2 flex gap-2"><TrendingUp className="w-3 h-3 text-cyan-400" /> TVV</span><div className="text-3xl font-black text-cyan-400">${totalVetted.toLocaleString()}</div></div>
+            <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5"><span className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2 flex gap-2"><Plus className="w-3 h-3 text-cyan-400" /> Deals</span><div className="text-3xl font-black text-white">{projects.length + portfolioProjects.length}</div></div>
+            <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5"><span className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2 flex gap-2"><Globe className="w-3 h-3 text-cyan-400" /> Networks</span><div className="text-3xl font-black text-white">9+</div></div>
+            <div className="text-left p-6 rounded-2xl bg-white/[0.02] border border-white/5"><span className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2 flex gap-2"><Lock className="w-3 h-3 text-cyan-400" /> Status</span><div className="text-sm font-black uppercase text-cyan-400">Secured</div></div>
           </div>
         </header>
 
-        {/* --- PRICING --- */}
-        <section id="pricing" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[
-                    { tier: 'Genesis', price: '$49', features: ['Basic Profile', 'Ecosystem Listing', 'Verified Announcement'] },
-                    { tier: 'Verified', price: '$149', features: ['Shield Badge', 'Priority Queue', 'Partners Introduction', 'Verified Announcement'] },
-                    { tier: 'Alliance', price: '$499', features: ['Neon Glow Status', 'Featured Listing', 'Direct VC Introduction', 'Strategic Advisory'] }
-                ].map((p) => (
-                    <div key={p.tier} className={`p-10 rounded-[40px] border flex flex-col ${p.tier === 'Alliance' ? 'border-cyan-400 alliance-glow' : 'border-white/5 bg-white/[0.01]'}`}>
-                        <h4 className="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-2">{p.tier}</h4>
-                        <div className="text-4xl font-black mb-8 italic">{p.price}</div>
-                        <ul className="space-y-4 mb-10 flex-grow">
-                            {p.features.map(f => <li key={f} className="text-xs font-bold text-gray-400 flex items-center gap-2"><CheckCircle2 className="w-3 h-3 text-cyan-400" /> {f}</li>)}
-                        </ul>
-                        <button onClick={() => { setFormData({...formData, tier: p.tier}); setIsModalOpen(true); }} className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-cyan-400 hover:text-black transition-all">Join {p.tier}</button>
-                    </div>
-                ))}
+        {/* --- SCORECARD SECTION --- */}
+        <section id="protocol" className="max-w-4xl mx-auto px-6 py-24 border-t border-white/5">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-black uppercase italic tracking-tighter mb-4">Institutional <span className="text-cyan-400">Readiness</span></h2>
+          </div>
+          <div className="bg-white/[0.02] border border-white/5 rounded-[40px] p-8 md:p-12">
+            <div className="space-y-8">
+              {scorecardQuestions.map((q) => (
+                <div key={q.id} className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6">
+                  <div><span className="text-[10px] font-black uppercase text-cyan-400 tracking-widest block mb-1">{q.category}</span><p className="text-sm font-bold text-gray-300">{q.text}</p></div>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleScoreChange(q.id, true)} className={`px-6 py-2 rounded-xl text-[10px] font-black transition-all ${answers[q.id] === true ? 'bg-cyan-400 text-black shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'bg-white/5 text-gray-500'}`}>Yes</button>
+                    <button onClick={() => handleScoreChange(q.id, false)} className={`px-6 py-2 rounded-xl text-[10px] font-black transition-all ${answers[q.id] === false ? 'bg-white/20 text-white' : 'bg-white/5 text-gray-500'}`}>No</button>
+                  </div>
+                </div>
+              ))}
             </div>
+            <div className="mt-12 p-8 bg-cyan-400/5 border border-cyan-400/20 rounded-3xl text-center">
+              <div className="mb-4 text-[10px] font-black uppercase text-gray-500 tracking-widest">Progress: {answeredCount}/9</div>
+              <button disabled={answeredCount < 9} onClick={() => setShowScoreResult(true)} className="bg-cyan-400 text-black px-10 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all disabled:opacity-50">Get Result</button>
+            </div>
+          </div>
         </section>
 
-        {/* --- LIVE DIRECTORY --- */}
-        <section id="vetting" className="max-w-7xl mx-auto px-6 py-12 border-t border-white/5 pt-20">
+        {/* --- PRICING --- */}
+        <section id="pricing" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { tier: 'Genesis', price: '$49', features: ['Basic Profile', 'Ecosystem Listing', 'Verified Announcement'] },
+              { tier: 'Verified', price: '$149', features: ['Shield Badge', 'Priority Queue', 'Partners Introduction', 'Verified Announcement'] },
+              { tier: 'Alliance', price: '$499', features: ['Neon Glow Status', 'Featured Listing', 'Direct VC Introduction', 'Strategic Advisory'] }
+            ].map((p) => (
+              <div key={p.tier} className={`p-10 rounded-[40px] border flex flex-col ${p.tier === 'Alliance' ? 'border-cyan-400 alliance-glow' : 'border-white/5 bg-white/[0.01]'}`}>
+                <h4 className="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-2">{p.tier}</h4>
+                <div className="text-4xl font-black mb-8 italic">{p.price}</div>
+                <ul className="space-y-4 mb-10 flex-grow">
+                  {p.features.map(f => <li key={f} className="text-xs font-bold text-gray-400 flex items-center gap-2"><CheckCircle2 className="w-3 h-3 text-cyan-400" /> {f}</li>)}
+                </ul>
+                <button onClick={() => { setFormData({...formData, tier: p.tier}); setIsModalOpen(true); }} className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase hover:bg-cyan-400 hover:text-black transition-all">Join {p.tier}</button>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* --- DIRECTORY --- */}
+        <section id="vetting" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <h2 className="text-2xl font-black uppercase italic text-gray-500 tracking-widest">Active Deal Flow</h2>
             <div className="flex flex-wrap gap-2">
               {chains.map(c => (
-                <button key={c} onClick={() => setActiveChain(c)} className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase border transition-all ${activeChain === c ? 'bg-cyan-400 text-black border-cyan-400 shadow-lg' : 'bg-white/5 text-gray-500 border-white/10'}`}>{c}</button>
+                <button key={c} onClick={() => setActiveChain(c)} className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase border transition-all ${activeChain === c ? 'bg-cyan-400 text-black border-cyan-400' : 'bg-white/5 text-gray-500 border-white/10'}`}>{c}</button>
               ))}
             </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-            {filteredProjects.map((p) => (
-              <div key={p.id} className={`bg-[#0D1117] border p-10 rounded-[40px] relative transition-all group ${p.vetting_tier === 'Alliance' ? 'alliance-glow border-cyan-400' : 'border-white/5 hover:border-white/20'}`}>
-                 <div className="absolute top-6 left-6 flex gap-2">
-                    {p.vetting_tier === 'Alliance' && <div className="bg-cyan-400 text-black text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic flex items-center gap-1 shadow-[0_0_15px_#22d3ee]"><Star className="w-3 h-3 fill-black" /> Alliance</div>}
-                    
-                    {/* NO SHIELD FOR GENESIS - ONLY FOR VERIFIED/ALLIANCE */}
-                    {p.vetting_tier === 'Verified' && <div className="bg-white/10 text-cyan-400 border border-cyan-400/30 text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> Verified</div>}
-                    
-                    {p.vetting_tier === 'Genesis' && <div className="bg-white/5 text-gray-400 border border-white/10 text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic">Genesis Tier</div>}
-
-                    <div className="bg-white/5 text-gray-400 border border-white/10 text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic">{p.chain}</div>
-                  </div>
-                  <h3 className="text-3xl font-black mt-12 uppercase italic mb-4 tracking-tight">{p.project_name}</h3>
-                  <div className="grid grid-cols-2 gap-4 mb-8 border-y border-white/5 py-6 text-[10px] font-black uppercase tracking-widest">
-                    <div><span className="text-gray-600 block mb-1">Seeking</span> <span className="text-cyan-400">{p.partnership_need}</span></div>
-                    <div><span className="text-gray-600 block mb-1">Stage</span> <span className="text-white">{p.stage}</span></div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 mt-4">
-                    <button onClick={() => window.open(p.website_url)} className="py-4 rounded-xl bg-white/5 border border-white/10 group-hover:bg-cyan-400 group-hover:text-black font-black transition-all text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg"><Globe className="w-3 h-3" /> Website</button>
-                    <button onClick={() => window.open(p.deck_url)} className="py-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400 font-black transition-all text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"><FileText className="w-3 h-3" /> Deck</button>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {projects.filter(p => activeChain === 'All' || p.chain === activeChain).map((p) => (
+              <div key={p.id} className={`bg-[#0D1117] border p-10 rounded-[40px] relative group ${p.vetting_tier === 'Alliance' ? 'alliance-glow border-cyan-400' : 'border-white/5'}`}>
+                <div className="absolute top-6 left-6 flex gap-2">
+                  <div className="bg-white/5 text-gray-400 border border-white/10 text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic">{p.vetting_tier}</div>
+                </div>
+                <h3 className="text-3xl font-black mt-12 uppercase italic mb-4">{p.project_name}</h3>
+                <div className="grid grid-cols-2 gap-4 mb-8 border-y border-white/5 py-6 text-[10px] font-black uppercase">
+                  <div><span className="text-gray-600 block mb-1">Seeking</span> <span className="text-cyan-400">{p.partnership_need}</span></div>
+                  <div><span className="text-gray-600 block mb-1">Stage</span> <span className="text-white">{p.stage}</span></div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                  <button onClick={() => window.open(p.website_url)} className="py-4 rounded-xl bg-white/5 border border-white/10 group-hover:bg-cyan-400 group-hover:text-black font-black text-[10px] uppercase">Website</button>
+                  <button onClick={() => window.open(p.deck_url)} className="py-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400 font-black text-[10px] uppercase">Deck</button>
+                </div>
               </div>
             ))}
           </div>
         </section>
       </main>
 
+      {/* --- SCORE RESULT MODAL --- */}
+      {showScoreResult && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={() => setShowScoreResult(false)} />
+          <div className="bg-[#0D1117] border border-cyan-400/30 w-full max-w-md p-10 rounded-[40px] relative z-10 text-center alliance-glow">
+            <button onClick={() => setShowScoreResult(false)} className="absolute top-6 right-6 text-gray-500 hover:text-white"><X /></button>
+            <div className="text-6xl font-black italic mb-2">{score}<span className="text-2xl text-gray-600">/9</span></div>
+            <div className={`text-4xl font-black uppercase italic mb-6 ${getResultTier().color}`}>{getResultTier().label}</div>
+            <p className="text-gray-400 text-sm mb-8 italic">{getResultTier().desc}</p>
+            <button onClick={() => { setShowScoreResult(false); setIsModalOpen(true); }} className="w-full bg-cyan-400 text-black font-black py-5 rounded-2xl uppercase text-[10px] tracking-widest shadow-lg shadow-cyan-400/20">Apply for Report ($49)</button>
+          </div>
+        </div>
+      )}
+
       {/* --- FOOTER --- */}
       <footer className="border-t border-white/5 bg-[#080a0e] pt-20 pb-10 px-6 mt-20 text-center md:text-left">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 text-center md:text-left">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-6 justify-center md:justify-start">
+              <ShieldCheck className="text-cyan-400 w-6 h-6" />
+              <span className="text-xl font-black uppercase italic tracking-[0.2em]">Psalm3</span>
+            </div>
+            <p className="text-gray-500 text-sm max-w-sm italic mx-auto md:mx-0">Psalm3 is the industry's security-first trust protocol.</p>
+          </div>
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6 font-sans">Ecosystem</h4>
+            <h4 className="text-[10px] font-black uppercase text-cyan-400 mb-6">Ecosystem</h4>
             <ul className="space-y-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
-              <li onClick={() => scrollToSection('vetting')} className="hover:text-cyan-400 cursor-pointer transition-colors">Live Queue</li>
-              
-              {/* This fix scrolls the user to the Protocol/Vetting section */}
-              <li 
-                onClick={() => window.location.href='#protocol'} 
-                className="hover:text-cyan-400 transition-colors cursor-pointer flex items-center justify-center md:justify-start gap-2"
-              >
-                Standards <ChevronRight className="w-3 h-3"/>
-              </li>
+              <li onClick={() => scrollToSection('vetting')} className="hover:text-cyan-400 cursor-pointer">Live Queue</li>
+              <li onClick={() => scrollToSection('protocol')} className="hover:text-cyan-400 cursor-pointer flex items-center gap-2 justify-center md:justify-start">Standards <ChevronRight className="w-3 h-3"/></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6">Social</h4>
+            <h4 className="text-[10px] font-black uppercase text-cyan-400 mb-6">Social</h4>
             <div className="flex gap-4 justify-center md:justify-start">
-              <a href="https://x.com/Psalms_Capital" target="_blank" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 transition-all rounded-xl shadow-xl"><Twitter className="w-5 h-5" /></a>
-              <a href="https://t.me/CEO_Psalms" target="_blank" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 transition-all rounded-xl shadow-xl"><MessageCircle className="w-5 h-5" /></a>
+              <a href="https://x.com/Psalms_Capital" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 rounded-xl transition-all"><Twitter className="w-5 h-5" /></a>
+              <a href="https://t.me/CEO_Psalms" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 rounded-xl transition-all"><MessageCircle className="w-5 h-5" /></a>
             </div>
           </div>
         </div>
-        <p className="text-center text-gray-600 text-[9px] font-black uppercase tracking-widest border-t border-white/5 pt-10">© 2026 Psalm3 Protocol. All Rights Reserved.</p>
+        <p className="text-center text-gray-600 text-[9px] font-black uppercase tracking-widest pt-10 border-t border-white/5">© 2026 Psalm3 Protocol. All Rights Reserved.</p>
       </footer>
 
       {/* --- FORM MODAL --- */}
@@ -235,63 +270,40 @@ export default function Psalm3FullSite() {
             {!showSuccess ? (
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <h2 className="text-4xl font-black uppercase italic text-cyan-400 text-center mb-6 tracking-tighter">Protocol Apply</h2>
-                
-                <div className="bg-cyan-400/5 border border-cyan-400/20 p-4 rounded-2xl mb-6 text-center">
-                    <p className="text-[9px] font-black uppercase text-cyan-400 tracking-widest mb-1">Tier: {formData.tier}</p>
-                    <p className="text-xs font-bold italic text-white/50">
-                        {formData.tier === 'Alliance' ? '$499 Protocol Fee' : formData.tier === 'Verified' ? '$149 Protocol Fee' : 'Free Entry'}
-                    </p>
-                </div>
-
                 <div className="space-y-4">
-                  <input required placeholder="Project Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400 transition-all" />
-                  <textarea required placeholder="Institutional Description" rows={2} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-sm text-white focus:border-cyan-400 transition-all" />
+                  <input required placeholder="Project Name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400" />
+                  <textarea required placeholder="Institutional Description" rows={2} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-sm text-white focus:border-cyan-400" />
                   
                   <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest ml-1">Seeking Partners</label>
-                        <select value={formData.need} onChange={(e) => setFormData({...formData, need: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold text-white outline-none appearance-none cursor-pointer">
-                            {partnershipNeeds.map(n => <option key={n} value={n} className="bg-[#0D1117]">{n}</option>)}
-                        </select>
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black uppercase text-gray-500 tracking-widest ml-1">Current Stage</label>
-                        <select value={formData.stage} onChange={(e) => setFormData({...formData, stage: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold text-white outline-none appearance-none cursor-pointer">
-                            <option value="Pre-Seed">Pre-Seed</option><option value="Seed">Seed</option><option value="Private">Private</option><option value="Public">Public</option>
-                        </select>
-                      </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <input required placeholder="Founder TG Handle" value={formData.telegram} onChange={(e) => setFormData({...formData, telegram: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400" />
-                    <select value={formData.chain} onChange={(e) => setFormData({...formData, chain: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold text-white outline-none">
-                        {chains.filter(c => c !== 'All').map(c => <option key={c} value={c} className="bg-[#0D1117]">{c}</option>)}
+                    <select value={formData.need} onChange={(e) => setFormData({...formData, need: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold text-white outline-none appearance-none">
+                      {partnershipNeeds.map(n => <option key={n} value={n} className="bg-[#0D1117]">{n}</option>)}
+                    </select>
+                    <select value={formData.stage} onChange={(e) => setFormData({...formData, stage: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold text-white outline-none appearance-none">
+                      <option value="Seed">Seed</option>
+                      <option value="Private">Private</option>
+                      <option value="Public">Public</option>
                     </select>
                   </div>
 
-                  <input required placeholder="Official Website" value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400" />
-                  
-                  <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-gray-500 tracking-widest text-center block">Update Vetting Tier</label>
-                      <div className="grid grid-cols-3 gap-2">
-                          {['Genesis', 'Verified', 'Alliance'].map(t => (
-                            <button key={t} type="button" onClick={() => setFormData({...formData, tier: t})} className={`py-4 rounded-xl text-[9px] font-black uppercase border transition-all ${formData.tier === t ? 'bg-cyan-400 text-black border-cyan-400 shadow-lg shadow-cyan-400/20' : 'bg-white/5 border-white/10 text-gray-500'}`}>{t}</button>
-                          ))}
-                      </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <input required placeholder="TG Handle" value={formData.telegram} onChange={(e) => setFormData({...formData, telegram: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400" />
+                    <select value={formData.chain} onChange={(e) => setFormData({...formData, chain: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold text-white outline-none">
+                      {chains.filter(c => c !== 'All').map(c => <option key={c} value={c} className="bg-[#0D1117]">{c}</option>)}
+                    </select>
                   </div>
-
-                  <input placeholder="Pitch Deck URL (Optional)" value={formData.deck} onChange={(e) => setFormData({...formData, deck: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400" />
+                  
+                  <div className="grid grid-cols-3 gap-2 py-4">
+                    {['Genesis', 'Verified', 'Alliance'].map(t => <button key={t} type="button" onClick={() => setFormData({...formData, tier: t})} className={`py-4 rounded-xl text-[9px] font-black uppercase border transition-all ${formData.tier === t ? 'bg-cyan-400 text-black border-cyan-400' : 'bg-white/5 border-white/10 text-gray-500'}`}>{t}</button>)}
+                  </div>
+                  <input required placeholder="Website URL" value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 font-bold outline-none text-white focus:border-cyan-400" />
                 </div>
-
-                <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-400 text-black font-black py-6 rounded-3xl uppercase text-sm tracking-widest hover:scale-[1.02] transition-all disabled:opacity-50">
-                  {isSubmitting ? 'Verifying...' : 'Submit Secured Request'}
-                </button>
+                <button type="submit" disabled={isSubmitting} className="w-full bg-cyan-400 text-black font-black py-6 rounded-3xl uppercase text-sm tracking-widest hover:scale-[1.02] disabled:opacity-50">{isSubmitting ? 'Verifying...' : 'Submit Secured Request'}</button>
               </form>
             ) : (
               <div className="text-center py-10">
-                <div className="bg-cyan-400/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 border border-cyan-400/20 shadow-lg"><ClipboardCheck className="w-10 h-10 text-cyan-400" /></div>
+                <div className="bg-cyan-400/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 border border-cyan-400/20"><ClipboardCheck className="w-10 h-10 text-cyan-400" /></div>
                 <h2 className="text-4xl font-black uppercase italic mb-4 text-white tracking-tighter">Protocol Sent</h2>
-                <button onClick={() => window.open('https://t.me/CEO_Psalms', '_blank')} className="w-full bg-white text-black font-black py-6 rounded-3xl uppercase text-sm hover:bg-cyan-400 transition-all shadow-xl">Connect Analyst</button>
+                <button onClick={() => window.open('https://t.me/CEO_Psalms', '_blank')} className="w-full bg-white text-black font-black py-6 rounded-3xl uppercase text-sm hover:bg-cyan-400 transition-all">Connect Analyst</button>
               </div>
             )}
           </div>
