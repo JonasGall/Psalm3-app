@@ -265,6 +265,52 @@ export default function Psalm3FullSite() {
           </div>
         </section>
 
+        {/* --- VETTING PROGRESS TRACKER --- */}
+<section id="tracker" className="max-w-4xl mx-auto px-6 py-24 border-t border-white/5">
+  <div className="bg-[#0D1117] border border-cyan-400/20 rounded-[40px] p-8 md:p-12 relative overflow-hidden">
+    <div className="absolute top-0 right-0 p-8 opacity-10">
+      <Activity className="w-32 h-32 text-cyan-400" />
+    </div>
+    
+    <div className="relative z-10">
+      <h2 className="text-3xl font-black uppercase italic mb-2">Live <span className="text-cyan-400">Vetting</span> Tracker</h2>
+      <p className="text-gray-500 text-sm mb-10 font-bold uppercase tracking-widest">Track your institutional audit in real-time</p>
+
+      {/* Progress Bar Container */}
+      <div className="space-y-12">
+        <div>
+          <div className="flex justify-between items-end mb-4">
+            <span className="text-[10px] font-black uppercase text-cyan-400 tracking-widest">Overall Completion</span>
+            <span className="text-2xl font-black italic">75%</span>
+          </div>
+          <div className="w-full h-4 bg-white/5 rounded-full overflow-hidden border border-white/10 p-1">
+            <div className="h-full bg-cyan-400 rounded-full shadow-[0_0_15px_#22d3ee] transition-all duration-1000" style={{ width: '75%' }}></div>
+          </div>
+        </div>
+
+        {/* Individual Audit Pillars */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { label: "Technical Logic", status: "100%", color: "text-cyan-400" },
+            { label: "Economic Stress", status: "60%", color: "text-yellow-400" },
+            { label: "Team KYC", status: "In Progress", color: "text-gray-500" }
+          ].map((item) => (
+            <div key={item.label} className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="text-[9px] font-black uppercase text-gray-600 mb-2">{item.label}</div>
+              <div className={`text-sm font-black uppercase italic ${item.color}`}>{item.status}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-12 flex flex-col md:flex-row gap-4 items-center justify-between border-t border-white/5 pt-8">
+        <p className="text-[10px] text-gray-500 font-bold italic">Latest Update: Reviewing Alliance Liquidity standards...</p>
+        <button className="bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-3 rounded-xl text-[10px] font-black uppercase transition-all">Check My Project</button>
+      </div>
+    </div>
+  </div>
+</section>
+
         {/* --- DIRECTORY --- */}
         <section id="vetting" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
