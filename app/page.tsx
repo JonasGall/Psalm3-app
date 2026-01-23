@@ -282,6 +282,25 @@ export default function Psalm3FullSite() {
             {projects.filter(p => activeChain === 'All' || p.chain === activeChain).map((p) => (
               <div key={p.id} className={`bg-[#0D1117] border p-10 rounded-[40px] relative group ${p.vetting_tier === 'Alliance' ? 'alliance-glow border-cyan-400' : 'border-white/5'}`}>
                 <div className="absolute top-6 left-6 flex gap-2">
+          {p.vetting_tier === 'Alliance' && (
+            <div className="bg-cyan-400 text-black text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic flex items-center gap-1 shadow-[0_0_15px_#22d3ee]">
+              <Star className="w-3 h-3 fill-black" /> Alliance
+            </div>
+          )}
+          
+          {p.vetting_tier === 'Verified' && (
+            <div className="bg-white/10 text-cyan-400 border border-cyan-400/30 text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3" /> Verified
+            </div>
+          )}
+          
+          {p.vetting_tier === 'Genesis' && (
+            <div className="bg-white/5 text-gray-400 border border-white/10 text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic">
+              Genesis
+            </div>
+          )}
+        </div>
+                <div className="absolute top-6 left-6 flex gap-2">
                   <div className="bg-white/5 text-gray-400 border border-white/10 text-[9px] font-black px-4 py-1.5 rounded-full uppercase italic">{p.vetting_tier}</div>
                 </div>
                 <h3 className="text-3xl font-black mt-12 uppercase italic mb-4">{p.project_name}</h3>
@@ -333,7 +352,7 @@ export default function Psalm3FullSite() {
           <div>
             <h4 className="text-[10px] font-black uppercase text-cyan-400 mb-6">Social</h4>
             <div className="flex gap-4 justify-center md:justify-start">
-              <a href="https://x.com/Psalms_Capital" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 rounded-xl transition-all"><Twitter className="w-5 h-5" /></a>
+              <a href="https://x.com/MyFounder_com" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 rounded-xl transition-all"><Twitter className="w-5 h-5" /></a>
               <a href="https://t.me/CEO_Psalms" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 rounded-xl transition-all"><MessageCircle className="w-5 h-5" /></a>
             </div>
           </div>
