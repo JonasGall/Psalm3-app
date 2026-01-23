@@ -169,6 +169,85 @@ export default function Psalm3FullSite() {
           </div>
         </section>
 
+{/* --- NEW: VETTING METHODOLOGY VAULT --- */}
+<section id="methodology" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5 bg-gradient-to-b from-transparent to-cyan-500/[0.02]">
+  <div className="text-center mb-20">
+    <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-gray-400 px-4 py-1 rounded-full text-[10px] font-black mb-4 tracking-widest uppercase">
+      Institutional Standard v1.0
+    </div>
+    <h2 className="text-4xl md:text-6xl font-black uppercase italic tracking-tighter mb-6">
+      The <span className="text-cyan-400">Methodology</span> Vault
+    </h2>
+    <p className="text-gray-500 font-medium max-w-2xl mx-auto">
+      Our proprietary vetting engine evaluates projects across 48 data points to ensure only high-signal builds receive the Psalm3 Shield.
+    </p>
+  </div>
+
+  {/* Pillars of Trust */}
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+    {[
+      { 
+        title: "Technical Integrity", 
+        desc: "Deep-dive analysis of GitHub originality, smart contract security, and deployment architecture.", 
+        icon: <Zap className="w-6 h-6 text-cyan-400" />,
+        points: ["Codebase Originality", "Dependency Risks", "Update Frequency"] 
+      },
+      { 
+        title: "Economic Logic", 
+        desc: "Stress-testing tokenomics against market volatility and long-term inflationary pressure.", 
+        icon: <TrendingUp className="w-6 h-6 text-cyan-400" />,
+        points: ["Emission Schedules", "Liquidity Depth", "Holder Concentration"] 
+      },
+      { 
+        title: "Team Accountability", 
+        desc: "Multi-factor verification of core contributors and historical project performance.", 
+        icon: <Lock className="w-6 h-6 text-cyan-400" />,
+        points: ["KYC Verification", "Proven Track Record", "GTM Feasibility"] 
+      }
+    ].map((pillar) => (
+      <div key={pillar.title} className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 hover:border-cyan-400/30 transition-all">
+        <div className="mb-6">{pillar.icon}</div>
+        <h3 className="text-xl font-black uppercase italic mb-4">{pillar.title}</h3>
+        <p className="text-sm text-gray-500 leading-relaxed mb-6">{pillar.desc}</p>
+        <div className="space-y-2">
+          {pillar.points.map(pt => (
+            <div key={pt} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-cyan-400/70">
+              <CheckCircle2 className="w-3 h-3" /> {pt}
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {/* Standards Table */}
+  <div className="overflow-x-auto rounded-[40px] border border-white/5 bg-white/[0.01]">
+    <table className="w-full text-left border-collapse">
+      <thead>
+        <tr className="border-b border-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+          <th className="p-8">Audit Pillar</th>
+          <th className="p-8">Genesis Requirement</th>
+          <th className="p-8">Alliance Standard</th>
+        </tr>
+      </thead>
+      <tbody className="text-sm font-bold">
+        {[
+          { p: "Documentation", g: "Litepaper Required", a: "Full Tech Spec + Roadmap" },
+          { p: "Team Status", g: "Social Verification", a: "Institutional KYC" },
+          { p: "Security", g: "Internal Review", a: "3rd Party Audit Required" },
+          { p: "Liquidity", g: "Planned", a: "Locked & Verified" }
+        ].map((row) => (
+          <tr key={row.p} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+            <td className="p-8 text-white uppercase italic">{row.p}</td>
+            <td className="p-8 text-gray-500">{row.g}</td>
+            <td className="p-8 text-cyan-400">{row.a}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
         {/* --- PRICING --- */}
         <section id="pricing" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -229,7 +308,7 @@ export default function Psalm3FullSite() {
             <div className="text-6xl font-black italic mb-2">{score}<span className="text-2xl text-gray-600">/9</span></div>
             <div className={`text-4xl font-black uppercase italic mb-6 ${getResultTier().color}`}>{getResultTier().label}</div>
             <p className="text-gray-400 text-sm mb-8 italic">{getResultTier().desc}</p>
-            <button onClick={() => { setShowScoreResult(false); setIsModalOpen(true); }} className="w-full bg-cyan-400 text-black font-black py-5 rounded-2xl uppercase text-[10px] tracking-widest shadow-lg shadow-cyan-400/20">Apply for Report ($49)</button>
+            <button onClick={() => { setShowScoreResult(false); setIsModalOpen(true); }} className="w-full bg-cyan-400 text-black font-black py-5 rounded-2xl uppercase text-[10px] tracking-widest shadow-lg shadow-cyan-400/20">Apply Now</button>
           </div>
         </div>
       )}
