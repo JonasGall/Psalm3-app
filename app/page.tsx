@@ -60,6 +60,15 @@ const handleCheckStatus = () => {
   setTrackedProject(found || null);
 };
 
+const [partnerData, setPartnerData] = useState({
+  entity_name: '',
+  partner_category: '',
+  telegram_handle: '',
+  value_add: '',
+  portfolio_link: ''
+});
+const [isPartnerSubmitting, setIsPartnerSubmitting] = useState(false);
+
   const scorecardQuestions = [
     { id: 1, text: "Do you have a Whitepaper/Litepaper?", category: "Foundations" },
     { id: 2, text: "Is your GitHub repo active or ready for review?", category: "Foundations" },
@@ -128,10 +137,36 @@ const handleCheckStatus = () => {
     }
   };
 
+  const handlePartnerSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsPartnerSubmitting(true);
+
+  const { data, error } = await supabase
+    .from('alliance_partners') // The new table you just created
+    .insert([
+      { 
+        entity_name: partnerData.entity_name, 
+        partner_category: partnerData.partner_category, 
+        telegram_handle: partnerData.telegram_handle,
+        value_add: partnerData.value_add,
+        portfolio_link: partnerData.portfolio_link
+      }
+    ]);
+
+  if (error) {
+    console.error('Alliance Error:', error.message);
+    alert('Error submitting application.');
+  } else {
+    alert('Alliance Application Sent. The Command Center will review your signal soon. 🛡️');
+    setPartnerData({ entity_name: '', partner_category: '', telegram_handle: '', value_add: '', portfolio_link: '' });
+  }
+  setIsPartnerSubmitting(false);
+};
+
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) element.scrollIntoView({ behavior: 'smooth' });
-  };
+  const element = document.getElementById(id);
+  if (element) element.scrollIntoView({ behavior: 'smooth' });
+};
 
   return (
     <div className="min-h-screen bg-[#020408] text-white selection:bg-cyan-500/30 font-sans flex flex-col scroll-smooth">
@@ -143,14 +178,29 @@ const handleCheckStatus = () => {
         .alliance-glow { animation: alliance-pulse 3s infinite ease-in-out; }
       `}</style>
       
-      {/* --- NAVIGATION --- */}
-      <nav className="border-b border-white/5 p-6 flex justify-between items-center backdrop-blur-xl sticky top-0 z-50">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
-          <ShieldCheck className="text-cyan-400 w-8 h-8" />
-          <span className="text-2xl font-black uppercase italic tracking-[0.2em]">Psalm3</span>
-        </div>
-        <button onClick={() => {setIsModalOpen(true); setShowSuccess(false);}} className="bg-cyan-400 text-black px-8 py-2.5 rounded-full text-[10px] font-black tracking-widest uppercase hover:scale-105 transition-all shadow-[0_0_20px_rgba(34,211,238,0.4)]">Apply Now</button>
-      </nav>
+     <nav className="border-b border-white/5 p-6 flex justify-between items-center backdrop-blur-xl sticky top-0 z-50">
+  <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+    <ShieldCheck className="text-cyan-400 w-8 h-8" />
+    <span className="text-2xl font-black uppercase italic tracking-[0.2em]">Psalm3</span>
+  </div>
+  
+  <div className="flex items-center gap-6">
+    {/* New Alliance Link */}
+    <button 
+      onClick={() => scrollToSection('alliance')} 
+      className="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-cyan-400 transition-colors hidden md:block"
+    >
+      Join Alliance
+    </button>
+
+    <button 
+      onClick={() => {setIsModalOpen(true); setShowSuccess(false);}} 
+      className="bg-cyan-400 text-black px-8 py-2.5 rounded-full text-[10px] font-black tracking-widest uppercase hover:scale-105 transition-all shadow-[0_0_20px_rgba(34,211,238,0.4)]"
+    >
+      Apply Now
+    </button>
+  </div>
+</nav>
 
       <main className="flex-grow">
         {/* --- HERO --- */}
@@ -536,12 +586,106 @@ const handleCheckStatus = () => {
               <div className="text-center py-10">
                 <div className="bg-cyan-400/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 border border-cyan-400/20 shadow-lg"><ClipboardCheck className="w-10 h-10 text-cyan-400" /></div>
                 <h2 className="text-4xl font-black uppercase italic mb-4 text-white tracking-tighter">Protocol Sent</h2>
-                <button onClick={() => window.open('https://t.me/CEO_Psalms', '_blank')} className="w-full bg-white text-black font-black py-6 rounded-3xl uppercase text-sm hover:bg-cyan-400 transition-all shadow-2xl">Connect Analyst</button>
+                <button onClick={() => window.open('https://t.me/CEO_Psalms1', '_blank')} className="w-full bg-white text-black font-black py-6 rounded-3xl uppercase text-sm hover:bg-cyan-400 transition-all shadow-2xl">Connect Analyst</button>
               </div>
             )}
           </div>
         </div>
       )}
+
+      {/* --- ALLIANCE PARTNER INTAKE SECTION --- */}
+<section id="alliance" className="py-24 px-6 bg-gradient-to-b from-[#020408] to-[#05080f]">
+  <div className="max-w-4xl mx-auto">
+    <div className="bg-white/5 border border-cyan-400/20 rounded-3xl p-8 md:p-12 backdrop-blur-xl relative overflow-hidden">
+      {/* Decorative Glow */}
+      <div className="absolute -top-24 -right-24 w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full" />
+      
+      <div className="text-center mb-12 relative z-10">
+        <h2 className="text-4xl font-black uppercase italic tracking-tighter text-cyan-400">Join the Command Center</h2>
+        <p className="text-gray-400 font-bold uppercase tracking-widest mt-2 text-sm">Strategic Alliance Application</p>
+        <div className="h-1 w-20 bg-cyan-400 mx-auto mt-4" />
+      </div>
+
+      <form onSubmit={handlePartnerSubmit} className="grid grid-cols-1 gap-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-cyan-400 uppercase ml-2">Entity Name</label>
+            <input 
+              required
+              type="text" 
+              placeholder="e.g. Matrix Capital" 
+              value={partnerData.entity_name}
+              onChange={(e) => setPartnerData({...partnerData, entity_name: e.target.value})}
+              className="w-full bg-black/50 border border-white/10 p-4 rounded-xl text-white text-xs font-bold focus:border-cyan-400 outline-none transition-all" 
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-cyan-400 uppercase ml-2">Partner Category</label>
+            <select 
+              required
+              value={partnerData.partner_category}
+              onChange={(e) => setPartnerData({...partnerData, partner_category: e.target.value})}
+              className="w-full bg-black/50 border border-white/10 p-4 rounded-xl text-gray-400 text-xs font-bold focus:border-cyan-400 outline-none appearance-none"
+            >
+              <option value="">SELECT CATEGORY</option>
+              <option value="VC">VC / ANGEL INVESTOR</option>
+              <option value="Launchpad">LAUNCHPAD</option>
+              <option value="MM">MARKET MAKER</option>
+              <option value="KOL">KOL / MEDIA</option>
+              <option value="Audit">SECURITY AUDITOR</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-cyan-400 uppercase ml-2">Telegram @Handle</label>
+            <input 
+              required
+              type="text" 
+              placeholder="@..." 
+              value={partnerData.telegram_handle}
+              onChange={(e) => setPartnerData({...partnerData, telegram_handle: e.target.value})}
+              className="w-full bg-black/50 border border-white/10 p-4 rounded-xl text-white text-xs font-bold focus:border-cyan-400 outline-none transition-all" 
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-cyan-400 uppercase ml-2">Portfolio / Website</label>
+            <input 
+              required
+              type="url" 
+              placeholder="https://..." 
+              value={partnerData.portfolio_link}
+              onChange={(e) => setPartnerData({...partnerData, portfolio_link: e.target.value})}
+              className="w-full bg-black/50 border border-white/10 p-4 rounded-xl text-white text-xs font-bold focus:border-cyan-400 outline-none transition-all" 
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] font-black text-cyan-400 uppercase ml-2">Value Proposition</label>
+          <textarea 
+            required
+            placeholder="How do you add value to Psalm3 verified projects?" 
+            rows={3} 
+            value={partnerData.value_add}
+            onChange={(e) => setPartnerData({...partnerData, value_add: e.target.value})}
+            className="w-full bg-black/50 border border-white/10 p-4 rounded-xl text-white text-xs font-bold focus:border-cyan-400 outline-none transition-all resize-none"
+          ></textarea>
+        </div>
+
+        <button 
+          disabled={isPartnerSubmitting}
+          type="submit"
+          className="w-full bg-cyan-400 text-black font-black uppercase italic py-5 rounded-xl shadow-[0_0_30px_rgba(34,211,238,0.2)] hover:shadow-[0_0_50px_rgba(34,211,238,0.4)] disabled:opacity-50 disabled:cursor-not-allowed transition-all tracking-tighter text-xl mt-4"
+        >
+          {isPartnerSubmitting ? "TRANSMITTING SIGNAL..." : "Submit Alliance Application 🛡️"}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
 
       {/* --- FOOTER --- */}
       <footer className="border-t border-white/5 bg-[#080a0e] pt-20 pb-10 px-6 mt-20 text-center md:text-left">
@@ -564,7 +708,7 @@ const handleCheckStatus = () => {
             <h4 className="text-[10px] font-black uppercase text-cyan-400 mb-6">Social</h4>
             <div className="flex gap-4 justify-center md:justify-start">
               <a href="https://x.com/MyFounder_com" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 rounded-xl transition-all shadow-xl"><Twitter className="w-5 h-5" /></a>
-              <a href="https://t.me/CEO_Psalms" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 rounded-xl transition-all shadow-xl"><MessageCircle className="w-5 h-5" /></a>
+              <a href="https://t.me/CEO_Psalms1" className="p-3 bg-white/5 border border-white/10 hover:text-cyan-400 rounded-xl transition-all shadow-xl"><MessageCircle className="w-5 h-5" /></a>
             </div>
           </div>
         </div>
