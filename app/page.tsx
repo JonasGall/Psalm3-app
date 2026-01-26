@@ -255,6 +255,61 @@ const handleCheckStatus = () => {
           </div>
         </section>
 
+        {/* --- TIER EXPLAINER --- */}
+<section id="tier-details" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
+  <div className="text-center mb-16">
+    <h2 className="text-4xl font-black uppercase italic tracking-tighter mb-4">The <span className="text-cyan-400">Alliance</span> Tiers</h2>
+    <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">Strategic Verification Roadmap</p>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+    {/* Genesis Tier Explainer */}
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="p-3 bg-white/5 rounded-2xl border border-white/10"><ShieldCheck className="w-6 h-6 text-gray-400" /></div>
+        <h3 className="text-xl font-black uppercase italic">Genesis</h3>
+      </div>
+      <p className="text-sm text-gray-500 leading-relaxed font-medium">
+        Designed for early-stage builds. This tier provides basic **Ecosystem Indexing** to separate your project from the unverified noise. It signals that your documentation meets the foundational Psalm3 standard.
+      </p>
+      <div className="pt-4 border-t border-white/5">
+        <span className="text-[10px] font-black uppercase text-cyan-400 tracking-widest">Key Outcome:</span>
+        <p className="text-xs font-bold text-white mt-1">Foundational Trust & Directory Presence</p>
+      </div>
+    </div>
+
+    {/* Verified Tier Explainer */}
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="p-3 bg-cyan-400/10 rounded-2xl border border-cyan-400/30"><Activity className="w-6 h-6 text-cyan-400" /></div>
+        <h3 className="text-xl font-black uppercase italic">Verified</h3>
+      </div>
+      <p className="text-sm text-gray-400 leading-relaxed font-medium">
+        The benchmark for **Security Signaling**. This tier involves a deep-dive into your GitHub architecture and GTM logic. Perfect for projects moving toward a public launch or private raise.
+      </p>
+      <div className="pt-4 border-t border-white/5">
+        <span className="text-[10px] font-black uppercase text-cyan-400 tracking-widest">Key Outcome:</span>
+        <p className="text-xs font-bold text-white mt-1">Priority Vetting & Security Shielding</p>
+      </div>
+    </div>
+
+    {/* Alliance Tier Explainer */}
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="p-3 bg-cyan-400 text-black rounded-2xl shadow-[0_0_20px_rgba(34,211,238,0.4)]"><Star className="w-6 h-6 fill-black" /></div>
+        <h3 className="text-xl font-black uppercase italic">Alliance</h3>
+      </div>
+      <p className="text-sm text-white leading-relaxed font-medium">
+        The **Institutional Gold Standard**. This tier is reserved for high-utility protocols ready for direct VC introductions, Market Maker onboarding, and strategic Psalm3 Advisory.
+      </p>
+      <div className="pt-4 border-t border-white/5">
+        <span className="text-[10px] font-black uppercase text-cyan-400 tracking-widest">Key Outcome:</span>
+        <p className="text-xs font-bold text-white mt-1">Direct Institutional Bridging & Advisory</p>
+      </div>
+    </div>
+  </div>
+</section>
+
         {/* --- PRICING --- */}
         <section id="pricing" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -270,9 +325,10 @@ const handleCheckStatus = () => {
                   {p.features.map(f => <li key={f} className="text-xs font-bold text-gray-400 flex items-center gap-2"><CheckCircle2 className="w-3 h-3 text-cyan-400" /> {f}</li>)}
                 </ul>
                 <button onClick={() => { setFormData({...formData, tier: p.tier}); setIsModalOpen(true); }} className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase hover:bg-cyan-400 hover:text-black transition-all">Join {p.tier}</button>
-              </div>
+              </div>         
             ))}
           </div>
+        
         </section>
 
         {/* --- INTERACTIVE VETTING TRACKER --- */}
@@ -380,7 +436,18 @@ const handleCheckStatus = () => {
 
       <div className="mt-12 flex flex-col md:flex-row gap-4 items-center justify-between border-t border-white/5 pt-8">
         <p className="text-[10px] text-gray-500 font-bold italic">Latest Update: Reviewing Alliance Liquidity standards...</p>
-        <button className="bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-3 rounded-xl text-[10px] font-black uppercase transition-all">Check My Project</button>
+       <button 
+  onClick={() => {
+    // Scrolls the user up to the search input field
+    const trackerSection = document.getElementById('tracker');
+    if (trackerSection) {
+      trackerSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }}
+  className="bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-3 rounded-xl text-[10px] font-black uppercase transition-all"
+>
+  Check My Project
+</button>
       </div>
     </div>
   </div>
